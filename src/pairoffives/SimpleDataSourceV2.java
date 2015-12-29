@@ -44,7 +44,7 @@ public class SimpleDataSourceV2 {
       }
 
 
-      dbserver="per.nl";
+      dbserver="per.nl:3307";
       database="school";
       username = "school";
       password = "school123";
@@ -63,6 +63,8 @@ public class SimpleDataSourceV2 {
            activeConn=createConnection();
        }
 
+       System.out.println("Connectie database gelukt");
+       
        return activeConn;
 
    }
@@ -74,6 +76,7 @@ public class SimpleDataSourceV2 {
                 "user=" + username + "&password=" + password;
 
        return DriverManager.getConnection(connectionString);
+       
        
    }
    

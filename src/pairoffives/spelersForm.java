@@ -49,7 +49,6 @@ public class spelersForm extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(735, 427));
         setMinimumSize(new java.awt.Dimension(735, 427));
         setResizable(false);
         getContentPane().setLayout(null);
@@ -94,7 +93,7 @@ public class spelersForm extends javax.swing.JFrame {
 
         jButton1.setText("Opslaan");
         getContentPane().add(jButton1);
-        jButton1.setBounds(110, 350, 73, 23);
+        jButton1.setBounds(110, 350, 80, 23);
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel8.setText("Spelers overzicht");
@@ -118,7 +117,7 @@ public class spelersForm extends javax.swing.JFrame {
 
         jButton2.setText("Aanpassen");
         getContentPane().add(jButton2);
-        jButton2.setBounds(410, 210, 110, 23);
+        jButton2.setBounds(410, 210, 120, 23);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

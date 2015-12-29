@@ -5,6 +5,11 @@
  */
 package pairoffives;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.DefaultComboBoxModel;
+
 /**
  *
  * @author Tony
@@ -14,6 +19,43 @@ public class inschrijvenForm extends javax.swing.JFrame {
     /**
      * Creates new form inschrijvenForm
      */
+    DefaultComboBoxModel box1 = new DefaultComboBoxModel(); 
+    DefaultComboBoxModel box2 = new DefaultComboBoxModel();    // Spelernamen en toernooinamen
+
+    public void vullenSpelers() {
+
+        try {
+            
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            
+            Statement stat = conn.createStatement();
+
+            /*ResultSet result = stat.executeQuery("select speler.naam as spelersnaam, toernooi.naam as toernooinaam from speler\n"
+                    + "inner join deelnemer on deelnemer.speler_id = speler.id\n"
+                    + "inner join toernooi on toernooi.id = deelnemer.toernooi_id");*/
+            
+            ResultSet result = stat.executeQuery("select id, naam from speler");
+
+            while (result.next()) {
+
+                ModelItem item = new ModelItem();
+
+                item.id = result.getInt("id");
+                item.naam = result.getString("naam");
+
+                box1.addElement(item);
+                
+            }
+            jComboBox1.setModel(box1);
+
+        } catch (Exception ex) {
+            
+            System.out.println(ex);
+        }
+
+    }
+
     public inschrijvenForm() {
         initComponents();
     }
@@ -40,7 +82,6 @@ public class inschrijvenForm extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(374, 413));
         setMinimumSize(new java.awt.Dimension(374, 413));
         setResizable(false);
         getContentPane().setLayout(null);
@@ -50,17 +91,22 @@ public class inschrijvenForm extends javax.swing.JFrame {
         jLabel1.setBounds(10, 100, 90, 20);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jComboBox1);
         jComboBox1.setBounds(100, 50, 110, 20);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setText("Nog geen speler? maak aan bij spelers.");
+        jLabel2.setText("Nog geen speler? Maak aan bij spelers.");
         getContentPane().add(jLabel2);
         jLabel2.setBounds(40, 320, 320, 40);
 
         jLabel3.setText("Speler naam: ");
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(20, 50, 70, 20);
+        jLabel3.setBounds(20, 50, 80, 20);
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         getContentPane().add(jComboBox2);
@@ -68,7 +114,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
         jLabel4.setText("Kosten gekozen toernooi:");
         getContentPane().add(jLabel4);
-        jLabel4.setBounds(150, 150, 130, 14);
+        jLabel4.setBounds(140, 150, 150, 14);
         getContentPane().add(jTextField1);
         jTextField1.setBounds(290, 140, 70, 30);
 
@@ -89,6 +135,10 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments
