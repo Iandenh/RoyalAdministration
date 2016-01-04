@@ -88,7 +88,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
         jLabel1.setText("Toernooi naam:");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(10, 100, 90, 20);
+        jLabel1.setBounds(10, 100, 110, 20);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -97,7 +97,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jComboBox1);
-        jComboBox1.setBounds(100, 50, 110, 20);
+        jComboBox1.setBounds(120, 50, 110, 32);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setText("Nog geen speler? Maak aan bij spelers.");
@@ -106,25 +106,30 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
         jLabel3.setText("Speler naam: ");
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(20, 50, 80, 20);
+        jLabel3.setBounds(20, 50, 90, 20);
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         getContentPane().add(jComboBox2);
-        jComboBox2.setBounds(100, 100, 110, 20);
+        jComboBox2.setBounds(120, 100, 110, 32);
 
         jLabel4.setText("Kosten gekozen toernooi:");
         getContentPane().add(jLabel4);
-        jLabel4.setBounds(140, 150, 150, 14);
+        jLabel4.setBounds(100, 150, 150, 20);
 
         jLabel5.setText("Betaling:");
         getContentPane().add(jLabel5);
-        jLabel5.setBounds(20, 200, 60, 14);
+        jLabel5.setBounds(20, 200, 60, 20);
         getContentPane().add(jTextField2);
-        jTextField2.setBounds(70, 190, 70, 30);
+        jTextField2.setBounds(90, 190, 70, 30);
 
         jButton1.setText("Inschrijven");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton1);
-        jButton1.setBounds(220, 220, 90, 23);
+        jButton1.setBounds(220, 220, 90, 32);
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel6.setText("Inschrijven voor een toernooi");
@@ -141,6 +146,14 @@ public class inschrijvenForm extends javax.swing.JFrame {
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        ModelItem speler = (ModelItem) jComboBox1.getSelectedItem();
+        String betaald = jTextField2.getText();
+        
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
