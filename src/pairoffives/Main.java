@@ -16,7 +16,11 @@ public class Main {
        //Nieuw object "Hoofdscherm" 
        
         Hoofdscherm hoofdscherm = new Hoofdscherm();
+        java.net.URL imageUrl = Main.class.getResource("/pairoffives/images/32.png");
+        hoofdscherm.setIconImage(new ImageIcon(imageUrl).getImage());
+        hoofdscherm.setTitle("Full House");
         hoofdscherm.setVisible(true);
+        
      
         
         
