@@ -42,7 +42,8 @@ public class spelersForm extends javax.swing.JFrame {
             int verloren;
             double rating;
            
-
+ 
+            
             try {
                 
              Connection conn = SimpleDataSourceV2.getConnection();
