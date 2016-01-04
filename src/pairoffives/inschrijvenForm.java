@@ -35,7 +35,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
                     + "inner join deelnemer on deelnemer.speler_id = speler.id\n"
                     + "inner join toernooi on toernooi.id = deelnemer.toernooi_id");*/
             
-            ResultSet result = stat.executeQuery("select id, naam from speler");
+            ResultSet result = stat.executeQuery("select * from speler");
 
             while (result.next()) {
 
@@ -75,11 +75,11 @@ public class inschrijvenForm extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(374, 413));
@@ -115,8 +115,6 @@ public class inschrijvenForm extends javax.swing.JFrame {
         jLabel4.setText("Kosten gekozen toernooi:");
         getContentPane().add(jLabel4);
         jLabel4.setBounds(140, 150, 150, 14);
-        getContentPane().add(jTextField1);
-        jTextField1.setBounds(290, 140, 70, 30);
 
         jLabel5.setText("Betaling:");
         getContentPane().add(jLabel5);
@@ -132,6 +130,10 @@ public class inschrijvenForm extends javax.swing.JFrame {
         jLabel6.setText("Inschrijven voor een toernooi");
         getContentPane().add(jLabel6);
         jLabel6.setBounds(70, 10, 260, 22);
+
+        jLabel7.setText("jLabel7");
+        getContentPane().add(jLabel7);
+        jLabel7.setBounds(270, 150, 50, 20);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -185,7 +187,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }

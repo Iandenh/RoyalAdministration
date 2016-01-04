@@ -9,6 +9,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.DefaultListModel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -21,6 +24,9 @@ public class spelersForm extends javax.swing.JFrame {
      */
     
     DefaultListModel jlistmodel = new DefaultListModel();
+    DefaultTableModel tablemodel = new DefaultTableModel();
+    JTable jtable = new JTable();
+    
     
     public void spelersoverzicht(){
         
@@ -31,7 +37,7 @@ public class spelersForm extends javax.swing.JFrame {
             
             Statement stat = conn.createStatement();
 
-            ResultSet result = stat.executeQuery("select id, naam, adres, postcode, woonplaats, telnr, email, gewonnen, verloren, rating from speler");
+            ResultSet result = stat.executeQuery("select * from speler");
 
             while (result.next()) {
 
@@ -48,11 +54,11 @@ public class spelersForm extends javax.swing.JFrame {
                 item.verloren = result.getInt("verloren");
                 item.rating = result.getDouble("rating");
    
-                jlistmodel.addElement(item);
+                tablemodel.setValueAt(item, 1, 1);
                 
             }
             
-            jList1.setModel(jlistmodel);
+             jTable1.setModel(tablemodel);
 
         } catch (Exception ex) {
             
@@ -97,10 +103,11 @@ public class spelersForm extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jButton2 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(735, 427));
-        setResizable(false);
         getContentPane().setLayout(null);
 
         jLabel1.setText("Naam:");
@@ -143,12 +150,12 @@ public class spelersForm extends javax.swing.JFrame {
 
         jButton1.setText("Opslaan");
         getContentPane().add(jButton1);
-        jButton1.setBounds(110, 350, 80, 23);
+        jButton1.setBounds(120, 330, 90, 23);
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel8.setText("Spelers overzicht");
         getContentPane().add(jLabel8);
-        jLabel8.setBounds(420, 20, 160, 22);
+        jLabel8.setBounds(280, 360, 160, 22);
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel9.setText("Speler aanmaken");
@@ -163,11 +170,27 @@ public class spelersForm extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jList1);
 
         getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(410, 60, 200, 130);
+        jScrollPane1.setBounds(10, 400, 700, 90);
 
         jButton2.setText("Aanpassen");
         getContentPane().add(jButton2);
-        jButton2.setBounds(410, 210, 120, 23);
+        jButton2.setBounds(560, 510, 120, 23);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Naam", "Achternaam", "Adres", "postcode"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
+
+        getContentPane().add(jScrollPane2);
+        jScrollPane2.setBounds(290, 80, 440, 90);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -221,7 +244,9 @@ public class spelersForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
