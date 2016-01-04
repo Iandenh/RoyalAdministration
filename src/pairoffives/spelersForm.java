@@ -6,9 +6,12 @@
 package pairoffives;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -27,45 +30,96 @@ public class spelersForm extends javax.swing.JFrame {
     DefaultTableModel tablemodel = new DefaultTableModel();
     JTable jtable = new JTable();
     
-    
     public void spelersoverzicht(){
-        
-         try {
             
-            Connection conn = SimpleDataSourceV2.getConnection();
+            String naam;
+            String adres;
+            String postcode;
+            String woonplaats;
+            int telnr;
+            String email;
+            int gewonnen;
+            int verloren;
+            double rating;
+           
 
-            
-            Statement stat = conn.createStatement();
-
-            ResultSet result = stat.executeQuery("select * from speler");
-
-            while (result.next()) {
-
-                ModelItem item = new ModelItem();
-
-                item.id = result.getInt("id");
-                item.naam = result.getString("naam");
-                item.adres = result.getString("adres");
-                item.postcode = result.getString("postcode");
-                item.woonplaats = result.getString("woonplaats");
-                item.telnr = result.getInt("telnr");
-                item.email = result.getString("email");
-                item.gewonnen = result.getInt("gewonnen");
-                item.verloren = result.getInt("verloren");
-                item.rating = result.getDouble("rating");
-   
-                tablemodel.setValueAt(item, 1, 1);
+            try {
                 
-            }
-            
-             jTable1.setModel(tablemodel);
+             Connection conn = SimpleDataSourceV2.getConnection();
 
-        } catch (Exception ex) {
+             Statement stat = conn.createStatement();
+
+             ResultSet result = stat.executeQuery("select * from speler");
+                
+                    
+                    
+                    tablemodel.addColumn("naam");
+                    tablemodel.addColumn("adres");
+                    tablemodel.addColumn("postcode");
+                    tablemodel.addColumn("woonplaats");
+                    tablemodel.addColumn("telnr");
+                    tablemodel.addColumn("email");
+                    tablemodel.addColumn("gewonnen");
+                    tablemodel.addColumn("verloren");
+                    tablemodel.addColumn("rating");
+             
+                while (result.next()) {
+                    
+                    naam = result.getString("naam");
+                    adres = result.getString("adres");
+                    postcode = result.getString("postcode");
+                    woonplaats = result.getString("woonplaats");
+                    telnr = result.getInt("telnr");
+                    email = result.getString("email");
+                    gewonnen = result.getInt("gewonnen");
+                    verloren = result.getInt("verloren");
+                    rating = result.getDouble("rating");
+                    
+                   
+                    tablemodel.addRow(new Object[]{naam, adres, postcode, 
+                        woonplaats, telnr, email, gewonnen, verloren, rating});
+                    
+
+                }
+                jTable1.setAutoResizeMode(jTable1.AUTO_RESIZE_OFF);
+                jTable1.setModel(tablemodel);
+                
+            } catch (Exception ex) {
+
+                System.out.println(ex);
             
-            System.out.println(ex);
         }
         
         
+    }
+    
+    public void speleropslaan(){
+        
+               try {
+              
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            //Statement stat = conn.createStatement();
+
+            String prepSqlStatement = "INSERT INTO speler (naam,adres,postcode,woonplaats,telnr,email) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
+            stat.setString(1, (jTextField1.getText()));
+            stat.setString(2, (jTextField2.getText()));
+            stat.setString(3, jTextField3.getText());
+            stat.setString(4, jTextField4.getText());
+            stat.setString(5, (jTextField5.getText()));
+            stat.setString(6, jTextField6.getText());
+            
+            int effectedRecords = stat.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Speler opgeslagen");
+            
+            spelersoverzicht();
+            
+            stat.close();
+        } catch (SQLException e) {
+            System.out.println("Fout bij opslaan speler: " + e);
+        }
     }
     
     
@@ -98,16 +152,20 @@ public class spelersForm extends javax.swing.JFrame {
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel10 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(735, 427));
+        setMaximumSize(new java.awt.Dimension(883, 427));
+        setMinimumSize(new java.awt.Dimension(883, 427));
+        setPreferredSize(new java.awt.Dimension(883, 427));
         getContentPane().setLayout(null);
 
         jLabel1.setText("Naam:");
@@ -149,6 +207,11 @@ public class spelersForm extends javax.swing.JFrame {
         jTextField6.setBounds(110, 280, 129, 25);
 
         jButton1.setText("Opslaan");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton1);
         jButton1.setBounds(120, 330, 90, 23);
 
@@ -160,40 +223,44 @@ public class spelersForm extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel9.setText("Speler aanmaken");
         getContentPane().add(jLabel9);
-        jLabel9.setBounds(70, 20, 160, 22);
-
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
-
-        getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(10, 400, 700, 90);
-
-        jButton2.setText("Aanpassen");
-        getContentPane().add(jButton2);
-        jButton2.setBounds(560, 510, 120, 23);
+        jLabel9.setBounds(90, 20, 160, 22);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Naam", "Achternaam", "Adres", "postcode"
+
             }
         ));
         jScrollPane2.setViewportView(jTable1);
 
         getContentPane().add(jScrollPane2);
-        jScrollPane2.setBounds(290, 80, 440, 90);
+        jScrollPane2.setBounds(260, 80, 580, 180);
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel10.setText("Spelers overzicht");
+        getContentPane().add(jLabel10);
+        jLabel10.setBounds(460, 20, 160, 22);
+
+        jButton2.setText("Verwijderen");
+        getContentPane().add(jButton2);
+        jButton2.setBounds(310, 300, 100, 23);
+
+        jButton3.setText("Wijzigen");
+        getContentPane().add(jButton3);
+        jButton3.setBounds(470, 300, 80, 23);
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        speleropslaan();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -233,17 +300,16 @@ public class spelersForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JList jList1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
