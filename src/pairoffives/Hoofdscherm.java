@@ -53,7 +53,6 @@ public class Hoofdscherm extends javax.swing.JFrame {
         getContentPane().setLayout(null);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/Hoofdscherm2.png"))); // NOI18N
-        jLabel2.setText("jLabel2");
         getContentPane().add(jLabel2);
         jLabel2.setBounds(0, 40, 840, 560);
 
@@ -133,6 +132,7 @@ public class Hoofdscherm extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         
         spelersForm spelers = new spelersForm();
+        spelers.spelersoverzicht();
         spelers.setVisible(true);
         spelers.setTitle("Spelers overzicht");
                 
