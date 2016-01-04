@@ -14,7 +14,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -153,17 +152,17 @@ public class spelersForm extends javax.swing.JFrame {
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(735, 427));
         setMaximumSize(new java.awt.Dimension(883, 427));
         setMinimumSize(new java.awt.Dimension(883, 427));
         setPreferredSize(new java.awt.Dimension(883, 427));
@@ -171,27 +170,27 @@ public class spelersForm extends javax.swing.JFrame {
 
         jLabel1.setText("Naam:");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(40, 90, 60, 14);
+        jLabel1.setBounds(40, 90, 60, 20);
 
         jLabel2.setText("Adres:");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(40, 130, 50, 14);
+        jLabel2.setBounds(40, 130, 50, 20);
 
         jLabel3.setText("Postcode:");
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(20, 170, 70, 14);
+        jLabel3.setBounds(20, 170, 70, 20);
 
         jLabel4.setText("Woonplaats:");
         getContentPane().add(jLabel4);
-        jLabel4.setBounds(10, 210, 80, 14);
+        jLabel4.setBounds(10, 210, 80, 20);
 
         jLabel5.setText("Telnr:");
         getContentPane().add(jLabel5);
-        jLabel5.setBounds(40, 250, 60, 14);
+        jLabel5.setBounds(40, 250, 60, 20);
 
         jLabel6.setText("Email:");
         getContentPane().add(jLabel6);
-        jLabel6.setBounds(40, 290, 50, 14);
+        jLabel6.setBounds(40, 290, 50, 20);
         getContentPane().add(jLabel7);
         jLabel7.setBounds(10, 230, 0, 0);
         getContentPane().add(jTextField1);
@@ -214,7 +213,7 @@ public class spelersForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(120, 330, 90, 23);
+        jButton1.setBounds(120, 330, 90, 32);
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel8.setText("Spelers overzicht");
@@ -249,11 +248,27 @@ public class spelersForm extends javax.swing.JFrame {
 
         jButton2.setText("Verwijderen");
         getContentPane().add(jButton2);
-        jButton2.setBounds(310, 300, 100, 23);
+        jButton2.setBounds(560, 510, 120, 32);
 
         jButton3.setText("Wijzigen");
         getContentPane().add(jButton3);
-        jButton3.setBounds(470, 300, 80, 23);
+        jButton3.setBounds(470, 300, 80, 32);
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Naam", "Achternaam", "Adres", "postcode"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable2);
+
+        getContentPane().add(jScrollPane3);
+        jScrollPane3.setBounds(290, 80, 440, 90);
 
         pack();
         setLocationRelativeTo(null);
@@ -310,10 +325,13 @@ public class spelersForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
