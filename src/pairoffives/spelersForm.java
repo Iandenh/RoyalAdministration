@@ -5,6 +5,11 @@
  */
 package pairoffives;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author Tony
@@ -14,6 +19,51 @@ public class spelersForm extends javax.swing.JFrame {
     /**
      * Creates new form spelersForm
      */
+    
+    DefaultListModel jlistmodel = new DefaultListModel();
+    
+    public void spelersoverzicht(){
+        
+         try {
+            
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            
+            Statement stat = conn.createStatement();
+
+            ResultSet result = stat.executeQuery("select id, naam, adres, postcode, woonplaats, telnr, email, gewonnen, verloren, rating from speler");
+
+            while (result.next()) {
+
+                ModelItem item = new ModelItem();
+
+                item.id = result.getInt("id");
+                item.naam = result.getString("naam");
+                item.adres = result.getString("adres");
+                item.postcode = result.getString("postcode");
+                item.woonplaats = result.getString("woonplaats");
+                item.telnr = result.getInt("telnr");
+                item.email = result.getString("email");
+                item.gewonnen = result.getInt("gewonnen");
+                item.verloren = result.getInt("verloren");
+                item.rating = result.getDouble("rating");
+   
+                jlistmodel.addElement(item);
+                
+            }
+            
+            jList1.setModel(jlistmodel);
+
+        } catch (Exception ex) {
+            
+            System.out.println(ex);
+        }
+        
+        
+    }
+    
+    
+    
     public spelersForm() {
         initComponents();
     }

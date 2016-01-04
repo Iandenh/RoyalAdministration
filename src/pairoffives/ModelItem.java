@@ -11,11 +11,18 @@ package pairoffives;
  */
 public class ModelItem {
     
+    
     public int id;
     public String naam;
     public String achternaam;
-    public String straat;
-    public String Geboortedatum;
+    public String adres;
+    public String postcode;
+    public String woonplaats;
+    public int telnr;
+    public String email;
+    public int gewonnen;
+    public int verloren;
+    public double rating;
     public int ingeschreven;
     
     
@@ -24,6 +31,7 @@ public class ModelItem {
     public String toString() {
         //Een JList of JComboBox laat deze return waarde zien
         return naam;
+       
     }
     
 }

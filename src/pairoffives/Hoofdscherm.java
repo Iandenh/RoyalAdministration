@@ -53,12 +53,10 @@ public class Hoofdscherm extends javax.swing.JFrame {
         getContentPane().setLayout(null);
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/Hoofdscherm2.png"))); // NOI18N
-        jLabel2.setText("jLabel2");
         getContentPane().add(jLabel2);
         jLabel2.setBounds(0, 40, 840, 560);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving.png"))); // NOI18N
-        jButton1.setText("Inschrijven");
         jButton1.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -122,6 +120,7 @@ public class Hoofdscherm extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         
         spelersForm spelers = new spelersForm();
+        spelers.spelersoverzicht();
         spelers.setVisible(true);
         spelers.setTitle("Spelers overzicht");
                 
