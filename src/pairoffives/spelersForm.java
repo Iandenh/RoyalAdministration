@@ -12,8 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
@@ -24,106 +24,183 @@ public class spelersForm extends javax.swing.JFrame {
     /**
      * Creates new form spelersForm
      */
-    
     DefaultListModel jlistmodel = new DefaultListModel();
     DefaultTableModel tablemodel = new DefaultTableModel();
-    JTable jtable = new JTable();
-    
-    public void spelersoverzicht(){
-            
-            String naam;
-            String adres;
-            String postcode;
-            String woonplaats;
-            int telnr;
-            String email;
-            int gewonnen;
-            int verloren;
-            double rating;
-           
- 
-            
-            try {
-                
-             Connection conn = SimpleDataSourceV2.getConnection();
 
-             Statement stat = conn.createStatement();
+    public void spelers_overzicht() {
 
-             ResultSet result = stat.executeQuery("select * from speler");
-                
-                    
-                    
-                    tablemodel.addColumn("naam");
-                    tablemodel.addColumn("adres");
-                    tablemodel.addColumn("postcode");
-                    tablemodel.addColumn("woonplaats");
-                    tablemodel.addColumn("telnr");
-                    tablemodel.addColumn("email");
-                    tablemodel.addColumn("gewonnen");
-                    tablemodel.addColumn("verloren");
-                    tablemodel.addColumn("rating");
-             
-                while (result.next()) {
-                    
-                    naam = result.getString("naam");
-                    adres = result.getString("adres");
-                    postcode = result.getString("postcode");
-                    woonplaats = result.getString("woonplaats");
-                    telnr = result.getInt("telnr");
-                    email = result.getString("email");
-                    gewonnen = result.getInt("gewonnen");
-                    verloren = result.getInt("verloren");
-                    rating = result.getDouble("rating");
-                    
-                   
-                    tablemodel.addRow(new Object[]{naam, adres, postcode, 
-                        woonplaats, telnr, email, gewonnen, verloren, rating});
-                    
+        int id;
+        String naam;
+        String adres;
+        String postcode;
+        String woonplaats;
+        String telnr;
+        String email;
+        int gewonnen;
+        int verloren;
+        double rating;
 
-                }
-                jTable1.setAutoResizeMode(jTable1.AUTO_RESIZE_OFF);
-                jTable1.setModel(tablemodel);
-                
-            } catch (Exception ex) {
+        try {
 
-                System.out.println(ex);
-            
-        }
-        
-        
-    }
-    
-    public void speleropslaan(){
-        
-               try {
-              
             Connection conn = SimpleDataSourceV2.getConnection();
 
-            //Statement stat = conn.createStatement();
+            Statement stat = conn.createStatement();
+
+            ResultSet result = stat.executeQuery("select * from speler");
+
+            // refreshing table na het wijzigen van een speler.
+            tablemodel.setColumnCount(0);
+            tablemodel.setNumRows(0);
+            jTable1.setModel(tablemodel);
+
+            tablemodel.addColumn("id");
+            tablemodel.addColumn("naam");
+            tablemodel.addColumn("adres");
+            tablemodel.addColumn("postcode");
+            tablemodel.addColumn("woonplaats");
+            tablemodel.addColumn("telnr");
+            tablemodel.addColumn("email");
+            tablemodel.addColumn("gewonnen");
+            tablemodel.addColumn("verloren");
+            tablemodel.addColumn("rating");
+
+            while (result.next()) {
+
+                id = result.getInt("id");
+                naam = result.getString("naam");
+                adres = result.getString("adres");
+                postcode = result.getString("postcode");
+                woonplaats = result.getString("woonplaats");
+                telnr = result.getString("telnr");
+                email = result.getString("email");
+                gewonnen = result.getInt("gewonnen");
+                verloren = result.getInt("verloren");
+                rating = result.getDouble("rating");
+
+                tablemodel.addRow(new Object[]{id, naam, adres, postcode,
+                    woonplaats, telnr, email, gewonnen, verloren, rating});
+
+            }
+            jTable1.setAutoResizeMode(jTable1.AUTO_RESIZE_OFF);
+            jTable1.setModel(tablemodel);
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+
+        }
+
+    }
+
+    public void speler_opslaan() {
+
+        try {
+
+            Connection conn = SimpleDataSourceV2.getConnection();
 
             String prepSqlStatement = "INSERT INTO speler (naam,adres,postcode,woonplaats,telnr,email) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
-            stat.setString(1, (jTextField1.getText()));
-            stat.setString(2, (jTextField2.getText()));
+            stat.setString(1, jTextField1.getText());
+            stat.setString(2, jTextField2.getText());
             stat.setString(3, jTextField3.getText());
             stat.setString(4, jTextField4.getText());
-            stat.setString(5, (jTextField5.getText()));
+            stat.setString(5, jTextField5.getText());
             stat.setString(6, jTextField6.getText());
-            
+
             int effectedRecords = stat.executeUpdate();
 
+            //Table update
+            tablemodel.addRow(new Object[]{jTextField1.getText(), jTextField2.getText(), jTextField3.getText(),
+                jTextField4.getText(), jTextField5.getText(), jTextField6.getText()});
+
             JOptionPane.showMessageDialog(null, "Speler opgeslagen");
-            
-            spelersoverzicht();
-            
+
             stat.close();
         } catch (SQLException e) {
             System.out.println("Fout bij opslaan speler: " + e);
         }
     }
-    
-    
-    
+
+    public void speler_verwijderen() {
+
+        try {
+
+            Connection connect = SimpleDataSourceV2.getConnection();
+
+            PreparedStatement pstm = connect.prepareStatement("delete from speler where id=?");
+
+            pstm.setString(1, jLabel8.getText());
+
+            pstm.executeUpdate();
+
+            //Refreshing spelers overzicht table
+            spelers_overzicht();
+
+            JOptionPane.showMessageDialog(null, "Speler verwijderd");
+
+            pstm.close();
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+
+    }
+
+    public void vullen_spelers() {
+
+        try {
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery("select * from speler");
+
+            while (result.next()) {
+
+                ModelItem item = new ModelItem();
+
+                item.id = result.getInt("id");
+                item.naam = result.getString("naam");
+                item.adres = result.getString("adres");
+
+            }
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+
+    }
+
+    public void speler_wijzigen() {
+
+        try {
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+            PreparedStatement result = conn.prepareStatement("update speler SET naam=?, adres=?, postcode=?, woonplaats=?, telnr=?, email=? where id =" + jLabel8.getText());
+
+            result.setString(1, jTextField1.getText());
+            result.setString(2, jTextField2.getText());
+            result.setString(3, jTextField3.getText());
+            result.setString(4, jTextField4.getText());
+            result.setString(5, jTextField5.getText());
+            result.setString(6, jTextField6.getText());
+
+            int res = result.executeUpdate();
+
+            spelers_overzicht();
+
+            JOptionPane.showMessageDialog(null, "Speler gewijzigd");
+
+            result.close();
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+    }
+
     public spelersForm() {
         initComponents();
     }
@@ -152,78 +229,70 @@ public class spelersForm extends javax.swing.JFrame {
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(883, 427));
-        setMinimumSize(new java.awt.Dimension(883, 427));
-        setPreferredSize(new java.awt.Dimension(883, 427));
+        setMinimumSize(new java.awt.Dimension(1075, 427));
         getContentPane().setLayout(null);
 
         jLabel1.setText("Naam:");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(40, 90, 60, 20);
+        jLabel1.setBounds(40, 90, 60, 14);
 
         jLabel2.setText("Adres:");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(40, 130, 50, 20);
+        jLabel2.setBounds(40, 130, 50, 14);
 
         jLabel3.setText("Postcode:");
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(20, 170, 70, 20);
+        jLabel3.setBounds(20, 170, 70, 14);
 
         jLabel4.setText("Woonplaats:");
         getContentPane().add(jLabel4);
-        jLabel4.setBounds(10, 210, 80, 20);
+        jLabel4.setBounds(10, 210, 80, 14);
 
         jLabel5.setText("Telnr:");
         getContentPane().add(jLabel5);
-        jLabel5.setBounds(40, 250, 60, 20);
+        jLabel5.setBounds(40, 250, 60, 14);
 
         jLabel6.setText("Email:");
         getContentPane().add(jLabel6);
-        jLabel6.setBounds(40, 290, 50, 20);
+        jLabel6.setBounds(40, 290, 50, 14);
         getContentPane().add(jLabel7);
         jLabel7.setBounds(10, 230, 0, 0);
         getContentPane().add(jTextField1);
-        jTextField1.setBounds(110, 80, 129, 25);
+        jTextField1.setBounds(110, 80, 150, 25);
         getContentPane().add(jTextField2);
-        jTextField2.setBounds(110, 120, 129, 25);
+        jTextField2.setBounds(110, 120, 150, 25);
         getContentPane().add(jTextField3);
-        jTextField3.setBounds(110, 160, 129, 25);
+        jTextField3.setBounds(110, 160, 150, 25);
         getContentPane().add(jTextField4);
-        jTextField4.setBounds(110, 200, 129, 25);
+        jTextField4.setBounds(110, 200, 150, 25);
         getContentPane().add(jTextField5);
-        jTextField5.setBounds(110, 240, 129, 25);
+        jTextField5.setBounds(110, 240, 150, 25);
         getContentPane().add(jTextField6);
-        jTextField6.setBounds(110, 280, 129, 25);
+        jTextField6.setBounds(110, 280, 150, 30);
 
-        jButton1.setText("Opslaan");
+        jButton1.setText("speler opslaan");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(120, 330, 90, 32);
-
-        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel8.setText("Spelers overzicht");
-        getContentPane().add(jLabel8);
-        jLabel8.setBounds(280, 360, 160, 22);
+        jButton1.setBounds(30, 340, 120, 23);
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel9.setText("Speler aanmaken");
         getContentPane().add(jLabel9);
-        jLabel9.setBounds(90, 20, 160, 22);
+        jLabel9.setBounds(100, 10, 160, 22);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -236,47 +305,98 @@ public class spelersForm extends javax.swing.JFrame {
 
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTable1);
 
         getContentPane().add(jScrollPane2);
-        jScrollPane2.setBounds(260, 80, 580, 180);
+        jScrollPane2.setBounds(420, 80, 580, 180);
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel10.setText("Spelers overzicht");
         getContentPane().add(jLabel10);
-        jLabel10.setBounds(460, 20, 160, 22);
+        jLabel10.setBounds(630, 30, 160, 22);
 
-        jButton2.setText("Verwijderen");
-        getContentPane().add(jButton2);
-        jButton2.setBounds(560, 510, 120, 32);
-
-        jButton3.setText("Wijzigen");
-        getContentPane().add(jButton3);
-        jButton3.setBounds(470, 300, 80, 32);
-
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Naam", "Achternaam", "Adres", "postcode"
+        jButton2.setText("Speler verwijderen");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
             }
-        ));
-        jScrollPane3.setViewportView(jTable2);
+        });
+        getContentPane().add(jButton2);
+        jButton2.setBounds(420, 280, 130, 23);
 
-        getContentPane().add(jScrollPane3);
-        jScrollPane3.setBounds(290, 80, 440, 90);
+        jButton3.setText("Speler wijzigen");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton3);
+        jButton3.setBounds(170, 340, 130, 23);
+
+        jLabel11.setText("Id:");
+        getContentPane().add(jLabel11);
+        jLabel11.setBounds(60, 50, 34, 14);
+        getContentPane().add(jLabel8);
+        jLabel8.setBounds(110, 44, 40, 20);
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        speleropslaan();
+        speler_opslaan();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        speler_verwijderen();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+
+        try {
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            int row = jTable1.getSelectedRow();
+            String Table_click = (jTable1.getModel().getValueAt(row, 0).toString());
+
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery("select * from speler where id ='" + Table_click + "'");
+
+            while (result.next()) {
+
+                int add0 = result.getInt("id");
+                jLabel8.setText(Integer.toString(add0));
+                String add1 = result.getString("naam");
+                String add2 = result.getString("adres");
+                String add3 = result.getString("postcode");
+                String add4 = result.getString("woonplaats");
+                String add5 = result.getString("telnr");
+                String add6 = result.getString("email");
+
+                jTextField1.setText(add1);
+                jTextField2.setText(add2);
+                jTextField3.setText(add3);
+                jTextField4.setText(add4);
+                jTextField5.setText(add5);
+                jTextField6.setText(add6);
+            }
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        speler_wijzigen();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -319,6 +439,7 @@ public class spelersForm extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -328,10 +449,8 @@ public class spelersForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;

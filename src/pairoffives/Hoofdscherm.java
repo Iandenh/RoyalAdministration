@@ -137,7 +137,7 @@ public class Hoofdscherm extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         
         spelersForm spelers = new spelersForm();
-        spelers.spelersoverzicht();
+        spelers.spelers_overzicht();
         spelers.setVisible(true);
         spelers.setTitle("Spelers overzicht");
                 
