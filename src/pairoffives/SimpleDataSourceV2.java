@@ -63,7 +63,6 @@ public class SimpleDataSourceV2 {
            activeConn=createConnection();
        }
 
-       System.out.println("Connectie database gelukt");
        
        return activeConn;
 
