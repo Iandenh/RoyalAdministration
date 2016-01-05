@@ -57,6 +57,9 @@ public class Hoofdscherm extends javax.swing.JFrame {
         jLabel2.setBounds(0, 40, 840, 560);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving.png"))); // NOI18N
+        jButton1.setBorder(null);
+        jButton1.setBorderPainted(false);
+        jButton1.setContentAreaFilled(false);
         jButton1.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving_hover.png"))); // NOI18N
         jButton1.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving_selected.png"))); // NOI18N
@@ -68,6 +71,9 @@ public class Hoofdscherm extends javax.swing.JFrame {
         });
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/toernooi.png"))); // NOI18N
+        jButton2.setBorder(null);
+        jButton2.setBorderPainted(false);
+        jButton2.setContentAreaFilled(false);
         jButton2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/toernooi_hover.png"))); // NOI18N
         jButton2.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/toernooi_selected.png"))); // NOI18N
         jButton2.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/toernooi_selected.png"))); // NOI18N
@@ -78,6 +84,9 @@ public class Hoofdscherm extends javax.swing.JFrame {
         });
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/users.png"))); // NOI18N
+        jButton3.setBorder(null);
+        jButton3.setBorderPainted(false);
+        jButton3.setContentAreaFilled(false);
         jButton3.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/users_hover.png"))); // NOI18N
         jButton3.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/users_selected.png"))); // NOI18N
         jButton3.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/users_selected.png"))); // NOI18N
@@ -88,6 +97,9 @@ public class Hoofdscherm extends javax.swing.JFrame {
         });
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/master.png"))); // NOI18N
+        jButton4.setBorder(null);
+        jButton4.setBorderPainted(false);
+        jButton4.setContentAreaFilled(false);
         jButton4.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/master_hover.png"))); // NOI18N
         jButton4.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/master_selected.png"))); // NOI18N
         jButton4.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/master_selected.png"))); // NOI18N
