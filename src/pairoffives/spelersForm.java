@@ -109,9 +109,8 @@ public class spelersForm extends javax.swing.JFrame {
 
             int effectedRecords = stat.executeUpdate();
 
-            //Table update
-            tablemodel.addRow(new Object[]{jTextField1.getText(), jTextField2.getText(), jTextField3.getText(),
-                jTextField4.getText(), jTextField5.getText(), jTextField6.getText()});
+            //Table update          
+            spelers_overzicht();
 
             JOptionPane.showMessageDialog(null, "Speler opgeslagen");
 
