@@ -6,8 +6,13 @@
 package pairoffives;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,8 +27,18 @@ public class toernooiForm extends javax.swing.JFrame {
     public toernooiForm() {
         initComponents();
     }
-
+    DefaultTableModel tablemodel = new DefaultTableModel();
+        
     public void toernooiOverzicht() {
+
+        int id;
+        String locatie;
+        String naam;
+        String soorttoernooi;
+        double kosten;
+        String datum;
+        int min_deelnemers;
+        int max_deelnemers;
         try {
 
             Connection conn = SimpleDataSourceV2.getConnection();
@@ -31,27 +46,45 @@ public class toernooiForm extends javax.swing.JFrame {
             Statement stat = conn.createStatement();
 
             ResultSet result = stat.executeQuery("select * from toernooi");
-            DefaultTableModel model;
-            model = new DefaultTableModel();
-            
-            model.addColumn("Naam");
-            model.addColumn("Type Toernooi");
-            model.addColumn("Locatie");
-            model.addColumn("Kosten");
-            String loc = "", naam = "", kosten = "", type = "";
+
+            // refreshing table na het wijzigen van een speler.
+            tablemodel.setColumnCount(0);
+            tablemodel.setNumRows(0);
+            jTable1.setModel(tablemodel);
+
+            tablemodel.addColumn("id");
+            tablemodel.addColumn("locatie");
+            tablemodel.addColumn("naam");
+            tablemodel.addColumn("soorttoernooi");
+            tablemodel.addColumn("kosten");
+            tablemodel.addColumn("datum");
+            tablemodel.addColumn("min_deelnemers");
+            tablemodel.addColumn("max_deelnemers");
+
             while (result.next()) {
-                loc = result.getString("locatie");
+
+                id = result.getInt("id");
+                locatie = result.getString("locatie");
                 naam = result.getString("naam");
-                type = result.getString("typetoernooi");
-                kosten = result.getString("kosten");
-                model.addRow(new Object[]{naam, type, loc,  kosten});
+                soorttoernooi = result.getString("soorttoernooi");
+                kosten = result.getInt("kosten");
+                datum = result.getString("datum");
+                min_deelnemers = result.getInt("min_deelnemers");
+                max_deelnemers = result.getInt("max_deelnemers");
+
+                tablemodel.addRow(new Object[]{id, locatie, naam, soorttoernooi,
+                    kosten, datum, min_deelnemers, max_deelnemers});
 
             }
-            jTable1.setModel(model);
+            jTable1.setAutoResizeMode(jTable1.AUTO_RESIZE_OFF);
+            jTable1.setModel(tablemodel);
+
         } catch (Exception ex) {
 
             System.out.println(ex);
+
         }
+
     }
 
     /**
@@ -66,6 +99,25 @@ public class toernooiForm extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jTextField3 = new javax.swing.JTextField();
+        jTextField4 = new javax.swing.JTextField();
+        jTextField5 = new javax.swing.JTextField();
+        jTextField6 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jTextField7 = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -83,7 +135,61 @@ public class toernooiForm extends javax.swing.JFrame {
                 "Naam", "Achternaam", "Adres", "postcode"
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTable1);
+
+        jButton2.setText("Speler verwijderen");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Locatie:");
+
+        jLabel2.setText("Naam:");
+
+        jLabel3.setText("Soort:");
+
+        jLabel4.setText("Kosten:");
+
+        jLabel5.setText("Datum");
+
+        jLabel6.setText("Min");
+
+        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField6ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("speler opslaan");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Speler wijzigen");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setText("Id:");
+
+        jTextField7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField7ActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setText("Min");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -92,23 +198,260 @@ public class toernooiForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 750, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(16, 16, 16)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(30, 30, 30)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(30, 30, 30)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 188, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(jLabel11))
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(17, 17, 17)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(15, 15, 15)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(15, 15, 15)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(15, 15, 15)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(15, 15, 15)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(13, 13, 13)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton1)
+                    .addComponent(jButton3))
+                .addGap(37, 37, 37))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        toernooiVerwijderen();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        toernooiOpslaan();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        toernooiWijzigen();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField6ActionPerformed
+
+    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField7ActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        try {
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            int row = jTable1.getSelectedRow();
+            String Table_click = (jTable1.getModel().getValueAt(row, 0).toString());
+
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery("select * from toernooi where id ='" + Table_click + "'");
+
+            while (result.next()) {
+
+                int add0 = result.getInt("id");
+                jLabel8.setText(Integer.toString(add0));
+                String add1 = result.getString("locatie");
+                String add2 = result.getString("naam");
+                String add3 = result.getString("soorttoernooi");
+                String add4 = result.getString("kosten");
+                String add5 = result.getString("datum");
+                String add6 = result.getString("min_deelnemers");
+                String add7 = result.getString("max_deelnemers");
+
+                jTextField1.setText(add1);
+                jTextField2.setText(add2);
+                jTextField3.setText(add3);
+                jTextField4.setText(add4);
+                jTextField5.setText(add5);
+                jTextField6.setText(add6);
+                jTextField7.setText(add7);
+            }
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+    public void toernooiOpslaan() {
+
+        try {
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            String prepSqlStatement = "INSERT INTO toernooi (locatie, naam,soorttoernooi,kosten,datum,min_deelnemers,max_deelnemers) VALUES (?, ?, ?, ?, ?, ?,?)";
+            PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
+            stat.setString(1, jTextField1.getText());
+            stat.setString(2, jTextField2.getText());
+            stat.setString(3, jTextField3.getText());
+            stat.setString(4, jTextField4.getText());
+            SimpleDateFormat from = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat to = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = from.parse(jTextField5.getText());       // 01/02/2014
+            String mysqlString = to.format(date);     // 2014-02-01
+            stat.setString(5, mysqlString);
+            stat.setString(6, jTextField6.getText());
+            stat.setString(7, jTextField7.getText());
+
+            int effectedRecords = stat.executeUpdate();
+
+            //Table update          
+            toernooiOverzicht();
+
+            JOptionPane.showMessageDialog(null, "Speler opgeslagen");
+
+            stat.close();
+        } catch (SQLException e) {
+            System.out.println("Fout bij opslaan speler: " + e);
+        } catch (Exception e) {
+            
+        }
+    }
+    
+    public void toernooiVerwijderen() {
+
+        try {
+
+            Connection connect = SimpleDataSourceV2.getConnection();
+
+            PreparedStatement pstm = connect.prepareStatement("delete from toernooi where id=?");
+
+            pstm.setString(1, jLabel8.getText());
+
+            pstm.executeUpdate();
+
+            //Refreshing spelers overzicht table
+            toernooiOverzicht();
+
+            JOptionPane.showMessageDialog(null, "Speler verwijderd");
+
+            pstm.close();
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+
+    }
+    
+    public void toernooiWijzigen() {
+
+        try {
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+            PreparedStatement result = conn.prepareStatement("update toernooi SET locatie=?, naam=?, soorttoernooi=?, kosten=?, datum=?, min_deelnemers=?, max_deelnemers=?,  where id =" + jLabel8.getText());
+            result.setString(1, jTextField1.getText());
+            result.setString(2, jTextField2.getText());
+            result.setString(3, jTextField3.getText());
+            result.setString(4, jTextField4.getText());
+            SimpleDateFormat from = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat to = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = from.parse(jTextField5.getText());       // 01/02/2014
+            String mysqlString = to.format(date);     // 2014-02-01
+            result.setString(5, mysqlString);
+            result.setString(6, jTextField6.getText());
+            result.setString(7, jTextField7.getText());
+
+            int res = result.executeUpdate();
+
+            toernooiOverzicht();
+
+            JOptionPane.showMessageDialog(null, "Speler gewijzigd");
+
+            result.close();
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -145,8 +488,27 @@ public class toernooiForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField jTextField7;
     // End of variables declaration//GEN-END:variables
 }
