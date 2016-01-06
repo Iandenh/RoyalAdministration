@@ -279,7 +279,7 @@ public class spelersForm extends javax.swing.JFrame {
         getContentPane().add(jTextField6);
         jTextField6.setBounds(110, 280, 150, 30);
 
-        jButton1.setText("speler opslaan");
+        jButton1.setText("Speler opslaan");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -339,9 +339,9 @@ public class spelersForm extends javax.swing.JFrame {
 
         jLabel11.setText("Id:");
         getContentPane().add(jLabel11);
-        jLabel11.setBounds(60, 50, 34, 14);
+        jLabel11.setBounds(60, 60, 34, 14);
         getContentPane().add(jLabel8);
-        jLabel8.setBounds(110, 44, 40, 20);
+        jLabel8.setBounds(110, 50, 40, 20);
 
         pack();
         setLocationRelativeTo(null);

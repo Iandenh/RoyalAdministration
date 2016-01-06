@@ -23,6 +23,9 @@ public class toernooiForm extends javax.swing.JFrame {
         initComponents();
     }
 
+    DefaultTableModel model = new DefaultTableModel();
+    
+    
     public void toernooiOverzicht() {
         try {
 
@@ -31,23 +34,30 @@ public class toernooiForm extends javax.swing.JFrame {
             Statement stat = conn.createStatement();
 
             ResultSet result = stat.executeQuery("select * from toernooi");
-            DefaultTableModel model;
-            model = new DefaultTableModel();
+            
             
             model.addColumn("Naam");
             model.addColumn("Type Toernooi");
             model.addColumn("Locatie");
             model.addColumn("Kosten");
-            String loc = "", naam = "", kosten = "", type = "";
+            
+            
+            String locatie = "", naam = "", kosten = "", type = "";
+            
             while (result.next()) {
-                loc = result.getString("locatie");
+                
+                locatie = result.getString("locatie");
                 naam = result.getString("naam");
                 type = result.getString("typetoernooi");
                 kosten = result.getString("kosten");
-                model.addRow(new Object[]{naam, type, loc,  kosten});
+                
+                model.addRow(new Object[]{naam, type, locatie,  kosten});
 
             }
+            
             jTable1.setModel(model);
+            jTable1.setAutoResizeMode(jTable1.AUTO_RESIZE_OFF);
+            
         } catch (Exception ex) {
 
             System.out.println(ex);
@@ -74,13 +84,13 @@ public class toernooiForm extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Naam", "Achternaam", "Adres", "postcode"
+
             }
         ));
         jScrollPane2.setViewportView(jTable1);
