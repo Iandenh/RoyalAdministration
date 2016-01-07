@@ -24,6 +24,7 @@ public class ModelItem {
     public int verloren;
     public double rating;
     public int ingeschreven;
+    public double kosten;
     
     
 

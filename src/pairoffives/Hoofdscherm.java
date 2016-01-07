@@ -140,7 +140,8 @@ public class Hoofdscherm extends javax.swing.JFrame {
         
         inschrijvenForm inschrijven = new inschrijvenForm();
        
-        inschrijven.vullenSpelers();
+        inschrijven.Vullen_Spelers();
+        inschrijven.Vullen_Toernooi();
         
         inschrijven.setVisible(true);
         inschrijven.setTitle("Spelers inschrijven voor een toernooi");

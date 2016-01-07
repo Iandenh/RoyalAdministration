@@ -6,9 +6,12 @@
 package pairoffives;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,22 +22,17 @@ public class inschrijvenForm extends javax.swing.JFrame {
     /**
      * Creates new form inschrijvenForm
      */
-    DefaultComboBoxModel box1 = new DefaultComboBoxModel(); 
+    DefaultComboBoxModel box1 = new DefaultComboBoxModel();
     DefaultComboBoxModel box2 = new DefaultComboBoxModel();    // Spelernamen en toernooinamen
 
-    public void vullenSpelers() {
+    public void Vullen_Spelers() {
 
         try {
-            
+
             Connection conn = SimpleDataSourceV2.getConnection();
 
-            
             Statement stat = conn.createStatement();
 
-            /*ResultSet result = stat.executeQuery("select speler.naam as spelersnaam, toernooi.naam as toernooinaam from speler\n"
-                    + "inner join deelnemer on deelnemer.speler_id = speler.id\n"
-                    + "inner join toernooi on toernooi.id = deelnemer.toernooi_id");*/
-            
             ResultSet result = stat.executeQuery("select * from speler");
 
             while (result.next()) {
@@ -45,15 +43,85 @@ public class inschrijvenForm extends javax.swing.JFrame {
                 item.naam = result.getString("naam");
 
                 box1.addElement(item);
-                
+
             }
+
             jComboBox1.setModel(box1);
 
         } catch (Exception ex) {
-            
+
             System.out.println(ex);
         }
 
+    }
+
+    public void Vullen_Toernooi() {
+
+        try {
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+
+         
+            ResultSet result = stat.executeQuery("select * from toernooi");
+
+            while (result.next()) {
+
+                ModelItem item = new ModelItem();
+
+                item.id = result.getInt("id");
+                item.naam = result.getString("naam");
+                item.kosten = result.getDouble("kosten");
+
+                box2.addElement(item);
+
+            }
+
+            jComboBox2.setModel(box2);
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+
+    }
+    
+    public void Speler_Inschrijven(){
+        
+        
+         try {
+
+             ModelItem combobox1 = (ModelItem) jComboBox1.getSelectedItem();
+             ModelItem combobox2 = (ModelItem) jComboBox2.getSelectedItem();
+             double betaling = Double.parseDouble(jTextField2.getText());
+             
+             
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            String prepSqlStatement = "INSERT INTO deelnemer (speler_id,toernooi_id,betaling) VALUES (?, ?, ?)";
+            PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
+            
+            stat.setInt(1, combobox1.id);
+            stat.setInt(2, combobox2.id);
+            
+            if(betaling > combobox2.kosten){
+                
+                JOptionPane.showMessageDialog(null, "Toernooi kosten zijn lager");
+            }else{
+                stat.setDouble(3, (betaling));
+            }
+            
+            int effectedRecords = stat.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Speler "+ combobox1 +" heeft zich ingeschreven voor het toernooi "+ combobox2);
+
+            stat.close();
+        } catch (SQLException e) {
+            
+            System.out.println("Fout bij het inschrijven: " + e);
+        }
+        
     }
 
     public inschrijvenForm() {
@@ -84,11 +152,8 @@ public class inschrijvenForm extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(374, 413));
         setResizable(false);
-        getContentPane().setLayout(null);
 
         jLabel1.setText("Toernooi naam:");
-        getContentPane().add(jLabel1);
-        jLabel1.setBounds(10, 100, 110, 20);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -96,31 +161,28 @@ public class inschrijvenForm extends javax.swing.JFrame {
                 jComboBox1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jComboBox1);
-        jComboBox1.setBounds(120, 50, 110, 32);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setText("Nog geen speler? Maak aan bij spelers.");
-        getContentPane().add(jLabel2);
-        jLabel2.setBounds(40, 320, 320, 40);
 
         jLabel3.setText("Speler naam: ");
-        getContentPane().add(jLabel3);
-        jLabel3.setBounds(20, 50, 90, 20);
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        getContentPane().add(jComboBox2);
-        jComboBox2.setBounds(120, 100, 110, 32);
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Kosten gekozen toernooi:");
-        getContentPane().add(jLabel4);
-        jLabel4.setBounds(100, 150, 150, 20);
 
         jLabel5.setText("Betaling:");
-        getContentPane().add(jLabel5);
-        jLabel5.setBounds(20, 200, 60, 20);
-        getContentPane().add(jTextField2);
-        jTextField2.setBounds(90, 190, 70, 30);
+
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
 
         jButton1.setText("Inschrijven");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -128,17 +190,72 @@ public class inschrijvenForm extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1);
-        jButton1.setBounds(220, 220, 90, 32);
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel6.setText("Inschrijven voor een toernooi");
-        getContentPane().add(jLabel6);
-        jLabel6.setBounds(70, 10, 260, 22);
 
-        jLabel7.setText("jLabel7");
-        getContentPane().add(jLabel7);
-        jLabel7.setBounds(270, 150, 50, 20);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(70, 70, 70)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(108, 108, 108)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(2, 2, 2))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(jLabel6)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37)
+                .addComponent(jButton1)
+                .addGap(38, 38, 38)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -148,12 +265,19 @@ public class inschrijvenForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        ModelItem speler = (ModelItem) jComboBox1.getSelectedItem();
-        String betaald = jTextField2.getText();
-        
-        
+        Speler_Inschrijven();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+
+        ModelItem string = (ModelItem) jComboBox2.getSelectedItem();
+        jLabel7.setText("€ " + Double.toString(string.kosten));
+
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
 
     /**
      * @param args the command line arguments
