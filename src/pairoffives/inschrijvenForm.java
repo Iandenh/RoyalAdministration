@@ -135,10 +135,13 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
                 JOptionPane.showMessageDialog(null, "Je kan niet meer inleggeld vragen dan het inleg bedrag voor het toernooi " + combobox2.naam);
 
+                return;
+                
             } else if (betaling < combobox2.kosten) {
 
                 JOptionPane.showMessageDialog(null, "Speler heeft niet genoeg betaald en kan dan niet ingeschreven worden voor het toernooi " + combobox2.naam);
-
+                
+                return;
             }
 
             ResultSet result = stat.executeQuery("select speler_id from deelnemer where toernooi_id = " + combobox2.id);
@@ -160,15 +163,19 @@ public class inschrijvenForm extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Speler heeft zich al ingeschreven voor het toernooi " + combobox2.naam);
 
                     stat.close();
-                    break;
+                    
+                    return; 
                 }
+                
+                
             }
-
+            
+            
             JOptionPane.showMessageDialog(null, "Speler " + combobox1 + " heeft zich succesvol ingeschreven voor het toernooi " + combobox2);
             stat.setDouble(3, (betaling));
             int effectedRecords = stat.executeUpdate();
             stat.close();
-
+                    
             System.out.println(obj.size());
 
             //Vullen_Spelers();
