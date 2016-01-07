@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
@@ -28,6 +29,8 @@ public class inschrijvenForm extends javax.swing.JFrame {
     public void Vullen_Spelers() {
 
         try {
+
+            box1.removeAllElements();
 
             Connection conn = SimpleDataSourceV2.getConnection();
 
@@ -63,7 +66,6 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
             Statement stat = conn.createStatement();
 
-         
             ResultSet result = stat.executeQuery("select * from toernooi");
 
             while (result.next()) {
@@ -86,42 +88,99 @@ public class inschrijvenForm extends javax.swing.JFrame {
         }
 
     }
-    
-    public void Speler_Inschrijven(){
-        
-        
-         try {
 
-             ModelItem combobox1 = (ModelItem) jComboBox1.getSelectedItem();
-             ModelItem combobox2 = (ModelItem) jComboBox2.getSelectedItem();
-             double betaling = Double.parseDouble(jTextField2.getText());
-             
-             
+    public void Vullen_Deelnemers() {
+
+        try {
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+
+            ResultSet result = stat.executeQuery("select speler_id from deelnemer");
+
+            ModelItem item = new ModelItem();
+
+            item.speler_id = result.getInt("speler_id");
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+
+    }
+
+    public void Speler_Inschrijven() {
+
+        ArrayList<String> obj = new ArrayList<String>();
+        ArrayList<String> obj1 = new ArrayList<String>();
+
+        try {
+
+             //jTextField2.setText(null);
+            ModelItem combobox1 = (ModelItem) jComboBox1.getSelectedItem();
+            ModelItem combobox2 = (ModelItem) jComboBox2.getSelectedItem();
+            double betaling = Double.parseDouble(jTextField2.getText());
+
             Connection conn = SimpleDataSourceV2.getConnection();
 
             String prepSqlStatement = "INSERT INTO deelnemer (speler_id,toernooi_id,betaling) VALUES (?, ?, ?)";
             PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
-            
+
             stat.setInt(1, combobox1.id);
             stat.setInt(2, combobox2.id);
-            
-            if(betaling > combobox2.kosten){
-                
-                JOptionPane.showMessageDialog(null, "Toernooi kosten zijn lager");
-            }else{
-                stat.setDouble(3, (betaling));
+
+            //Speler kan zich alleen inschrijven als het volledige inleg bedrag is overgemaakt
+            if (betaling > combobox2.kosten) {
+
+                JOptionPane.showMessageDialog(null, "Je kan niet meer inleggeld vragen dan het inleg bedrag voor het toernooi " + combobox2.naam);
+
+            } else if (betaling < combobox2.kosten) {
+
+                JOptionPane.showMessageDialog(null, "Speler heeft niet genoeg betaald en kan dan niet ingeschreven worden voor het toernooi " + combobox2.naam);
+
             }
-            
+
+            ResultSet result = stat.executeQuery("select speler_id from deelnemer where toernooi_id = " + combobox2.id);
+
+            while (result.next()) {
+
+                obj.add(Integer.toString(result.getInt("speler_id")));
+                //obj1.add(Integer.toString(result.getInt("toernooi_id")));
+            }
+
+            String choosen;
+
+            for (int i = 0; i < obj.size(); i++) {
+
+                if (Integer.parseInt(obj.get(i)) == combobox1.id) {
+
+                    choosen = obj.get(i);
+                    System.out.println(obj.get(i));
+                    JOptionPane.showMessageDialog(null, "Speler heeft zich al ingeschreven voor het toernooi " + combobox2.naam);
+
+                    stat.close();
+                    break;
+                }
+            }
+
+            JOptionPane.showMessageDialog(null, "Speler " + combobox1 + " heeft zich succesvol ingeschreven voor het toernooi " + combobox2);
+            stat.setDouble(3, (betaling));
             int effectedRecords = stat.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Speler "+ combobox1 +" heeft zich ingeschreven voor het toernooi "+ combobox2);
-
             stat.close();
+
+            System.out.println(obj.size());
+
+            //Vullen_Spelers();
         } catch (SQLException e) {
-            
+
             System.out.println("Fout bij het inschrijven: " + e);
+
+        } catch (NumberFormatException ex) {
+
+            JOptionPane.showMessageDialog(null, "Geen betaling ingevoerd");
         }
-        
+
     }
 
     public inschrijvenForm() {
@@ -201,9 +260,6 @@ public class inschrijvenForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(10, 10, 10)
@@ -214,21 +270,27 @@ public class inschrijvenForm extends javax.swing.JFrame {
                         .addGap(0, 0, 0)
                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(70, 70, 70)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(108, 108, 108)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(108, 108, 108)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(2, 2, 2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
