@@ -120,6 +120,7 @@ public class toernooiForm extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(1074, 470));
@@ -190,6 +191,12 @@ public class toernooiForm extends javax.swing.JFrame {
         jTextField1.setBounds(150, 80, 150, 25);
         getContentPane().add(jTextField2);
         jTextField2.setBounds(150, 120, 150, 25);
+
+        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField3ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jTextField3);
         jTextField3.setBounds(150, 160, 150, 25);
         getContentPane().add(jTextField4);
@@ -247,6 +254,15 @@ public class toernooiForm extends javax.swing.JFrame {
         jLabel10.setText("Toernooi aanmaken");
         getContentPane().add(jLabel10);
         jLabel10.setBounds(140, 10, 160, 22);
+
+        jButton4.setText("Zie rondes");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton4);
+        jButton4.setBounds(630, 350, 160, 23);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -308,6 +324,26 @@ public class toernooiForm extends javax.swing.JFrame {
             System.out.println(ex);
         }
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        int toernooiID = 0;
+        String toernooiNaam = jTextField2.getText();
+        
+        try {
+            toernooiID = Integer.parseInt(jLabel8.getText());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Toernooi ID is niet gevonden.");
+        }       
+            
+        if (toernooiID > 0) {
+            RoundsForm roundsForm = new RoundsForm(toernooiID, toernooiNaam);
+            roundsForm.setVisible(true);
+        }        
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3ActionPerformed
     public void toernooiOpslaan() {
 
         try {
@@ -441,6 +477,7 @@ public class toernooiForm extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
