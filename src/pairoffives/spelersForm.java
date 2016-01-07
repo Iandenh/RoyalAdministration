@@ -83,7 +83,8 @@ public class spelersForm extends javax.swing.JFrame {
             }
             jTable1.setAutoResizeMode(jTable1.AUTO_RESIZE_OFF);
             jTable1.setModel(tablemodel);
-
+            
+            
         } catch (Exception ex) {
 
             System.out.println(ex);

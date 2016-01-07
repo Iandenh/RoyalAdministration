@@ -25,6 +25,10 @@ public class ModelItem {
     public double rating;
     public int ingeschreven;
     public double kosten;
+    public int toernooi_id;
+    public int speler_id;
+    public double betaling;
+    
     
     
 
