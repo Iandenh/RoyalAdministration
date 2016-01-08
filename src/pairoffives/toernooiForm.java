@@ -369,7 +369,7 @@ public class toernooiForm extends javax.swing.JFrame {
             ToernooiSpelersForm toernooiSpeler = new ToernooiSpelersForm(selectedObject);
             toernooiSpeler.setVisible(true);
             toernooiSpeler.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            toernooiSpeler.setTitle("Toernooi");
+            toernooiSpeler.setTitle((String) jTable1.getModel().getValueAt(row, 2));
         }
     }//GEN-LAST:event_jTable1MousePressed
     public void toernooiOpslaan() {
@@ -422,7 +422,7 @@ public class toernooiForm extends javax.swing.JFrame {
             //Refreshing spelers overzicht table
             toernooiOverzicht();
 
-            JOptionPane.showMessageDialog(null, "Speler verwijderd");
+            JOptionPane.showMessageDialog(null, "Toernooi verwijderd");
 
             pstm.close();
 
