@@ -6,6 +6,7 @@
 package pairoffives;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.table.DefaultTableModel;
@@ -33,9 +34,10 @@ public class ToernooiSpelersForm extends javax.swing.JFrame {
 
             Connection conn = SimpleDataSourceV2.getConnection();
 
-            Statement stat = conn.createStatement();
-
-            ResultSet result = stat.executeQuery("SELECT * FROM deelnemer inner join speler ON deelnemer.speler_id = speler.id WHERE toernooi_id = "+toernooiId);
+            PreparedStatement stat = conn.prepareStatement("SELECT * FROM deelnemer inner join speler ON deelnemer.speler_id = speler.id WHERE toernooi_id = ?");
+            
+            stat.setInt(1, toernooiId);
+            ResultSet result = stat.executeQuery();
 
             // refreshing table na het wijzigen van een speler.
             tablemodel.setColumnCount(0);
