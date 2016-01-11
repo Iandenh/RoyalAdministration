@@ -56,71 +56,75 @@ public class Hoofdscherm extends javax.swing.JFrame {
         getContentPane().add(jLabel2);
         jLabel2.setBounds(0, 40, 840, 560);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving.png"))); // NOI18N
-        jButton1.setToolTipText("Inschrijven");
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving2.png"))); // NOI18N
         jButton1.setBorder(null);
         jButton1.setBorderPainted(false);
         jButton1.setContentAreaFilled(false);
+        jButton1.setInheritsPopupMenu(true);
         jButton1.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving_hover.png"))); // NOI18N
-        jButton1.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving_selected.png"))); // NOI18N
-        jButton1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving_selected.png"))); // NOI18N
+        jButton1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving_text.png"))); // NOI18N
+        jButton1.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving_text.png"))); // NOI18N
+        jButton1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving_selected2.png"))); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/toernooi.png"))); // NOI18N
-        jButton2.setToolTipText("Toernooi");
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/toernooi2.png"))); // NOI18N
         jButton2.setBorder(null);
         jButton2.setBorderPainted(false);
         jButton2.setContentAreaFilled(false);
-        jButton2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/toernooi_hover.png"))); // NOI18N
+        jButton2.setFocusTraversalPolicyProvider(true);
+        jButton2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/toernooi_hover2.png"))); // NOI18N
         jButton2.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/toernooi_selected.png"))); // NOI18N
-        jButton2.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/toernooi_selected.png"))); // NOI18N
+        jButton2.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/toernooi_selected2.png"))); // NOI18N
+        jButton2.setVerifyInputWhenFocusTarget(false);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/users.png"))); // NOI18N
-        jButton3.setToolTipText("Spelers");
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/spelers.png"))); // NOI18N
         jButton3.setBorder(null);
         jButton3.setBorderPainted(false);
         jButton3.setContentAreaFilled(false);
-        jButton3.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/users_hover.png"))); // NOI18N
+        jButton3.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/speler_hover.png"))); // NOI18N
         jButton3.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/users_selected.png"))); // NOI18N
-        jButton3.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/users_selected.png"))); // NOI18N
+        jButton3.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/spelers_selected.png"))); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/master.png"))); // NOI18N
-        jButton4.setToolTipText("Masterclass");
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/master2.png"))); // NOI18N
         jButton4.setBorder(null);
         jButton4.setBorderPainted(false);
         jButton4.setContentAreaFilled(false);
-        jButton4.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/master_hover.png"))); // NOI18N
-        jButton4.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/master_selected.png"))); // NOI18N
+        jButton4.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/master_hover2.png"))); // NOI18N
+        jButton4.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/master_selected2.png"))); // NOI18N
         jButton4.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/master_selected.png"))); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(117, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(106, 106, 106)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(124, 124, 124)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(107, 107, 107)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(96, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(64, 64, 64)
+                .addComponent(jButton2)
+                .addGap(95, 95, 95)
+                .addComponent(jButton3)
+                .addGap(78, 78, 78)
+                .addComponent(jButton4)
                 .addGap(122, 122, 122))
         );
         jPanel2Layout.setVerticalGroup(
@@ -169,6 +173,16 @@ public class Hoofdscherm extends javax.swing.JFrame {
         toernooi.setTitle("Toernooi");
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        Masterclass masterclass = new Masterclass();
+        masterclass.setSpeler();
+        masterclass.setMasterclass();
+        masterclass.setVisible(true);
+        masterclass.setTitle("Masterclass");
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    
     /**
      * @param args the command line arguments
      */
