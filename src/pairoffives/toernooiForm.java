@@ -5,6 +5,9 @@
  */
 package pairoffives;
 
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JTable;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -98,7 +103,11 @@ public class toernooiForm extends javax.swing.JFrame {
 
         jLabel9 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable1 = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                return false;   //Disallow the editing of any cell
+            }
+        };
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -146,6 +155,9 @@ public class toernooiForm extends javax.swing.JFrame {
             }
         ));
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTable1MousePressed(evt);
+            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable1MouseClicked(evt);
             }
@@ -162,27 +174,27 @@ public class toernooiForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton2);
-        jButton2.setBounds(460, 350, 160, 23);
+        jButton2.setBounds(460, 350, 160, 32);
 
         jLabel1.setText("Locatie:");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(80, 90, 60, 14);
+        jLabel1.setBounds(80, 90, 60, 20);
 
         jLabel2.setText("Naam:");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(90, 130, 40, 14);
+        jLabel2.setBounds(90, 130, 40, 20);
 
         jLabel3.setText("Soort:");
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(90, 170, 41, 14);
+        jLabel3.setBounds(90, 170, 41, 20);
 
         jLabel4.setText("Kosten:");
         getContentPane().add(jLabel4);
-        jLabel4.setBounds(80, 210, 50, 14);
+        jLabel4.setBounds(80, 210, 50, 20);
 
         jLabel5.setText("Datum:");
         getContentPane().add(jLabel5);
-        jLabel5.setBounds(80, 250, 60, 14);
+        jLabel5.setBounds(80, 250, 60, 20);
 
         jLabel6.setText("Minimaal deelnemers:");
         getContentPane().add(jLabel6);
@@ -219,7 +231,7 @@ public class toernooiForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(40, 370, 130, 23);
+        jButton1.setBounds(40, 370, 130, 32);
 
         jButton3.setText("Toernooi wijzigen");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -228,7 +240,7 @@ public class toernooiForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton3);
-        jButton3.setBounds(200, 370, 150, 23);
+        jButton3.setBounds(200, 370, 150, 32);
         getContentPane().add(jLabel11);
         jLabel11.setBounds(140, 50, 34, 0);
         getContentPane().add(jLabel8);
@@ -244,11 +256,11 @@ public class toernooiForm extends javax.swing.JFrame {
 
         jLabel7.setText("Maximaal deelnemers:");
         getContentPane().add(jLabel7);
-        jLabel7.setBounds(10, 330, 140, 14);
+        jLabel7.setBounds(10, 330, 140, 20);
 
         jLabel12.setText("Id:");
         getContentPane().add(jLabel12);
-        jLabel12.setBounds(100, 50, 34, 14);
+        jLabel12.setBounds(100, 50, 34, 20);
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel10.setText("Toernooi aanmaken");
@@ -262,7 +274,7 @@ public class toernooiForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton4);
-        jButton4.setBounds(630, 350, 160, 23);
+        jButton4.setBounds(630, 350, 160, 32);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -344,6 +356,22 @@ public class toernooiForm extends javax.swing.JFrame {
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
+
+    private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed
+        // TODO add your handling code here:
+        //JTable JTable1 = (JTable) evt.getSource();
+        Point p = evt.getPoint();
+        int row = jTable1.rowAtPoint(p);
+        if (evt.getClickCount() == 2) {
+            // your valueChanged overridden method 
+            int selectedObject = (int) jTable1.getModel().getValueAt(row, 0);
+            System.out.println(selectedObject);
+            ToernooiSpelersForm toernooiSpeler = new ToernooiSpelersForm(selectedObject);
+            toernooiSpeler.setVisible(true);
+            toernooiSpeler.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            toernooiSpeler.setTitle((String) jTable1.getModel().getValueAt(row, 2));
+        }
+    }//GEN-LAST:event_jTable1MousePressed
     public void toernooiOpslaan() {
 
         try {
@@ -394,7 +422,7 @@ public class toernooiForm extends javax.swing.JFrame {
             //Refreshing spelers overzicht table
             toernooiOverzicht();
 
-            JOptionPane.showMessageDialog(null, "Speler verwijderd");
+            JOptionPane.showMessageDialog(null, "Toernooi verwijderd");
 
             pstm.close();
 

@@ -57,6 +57,7 @@ public class Hoofdscherm extends javax.swing.JFrame {
         jLabel2.setBounds(0, 40, 840, 560);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/inschrijving.png"))); // NOI18N
+        jButton1.setToolTipText("Inschrijven");
         jButton1.setBorder(null);
         jButton1.setBorderPainted(false);
         jButton1.setContentAreaFilled(false);
@@ -71,6 +72,7 @@ public class Hoofdscherm extends javax.swing.JFrame {
         });
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/toernooi.png"))); // NOI18N
+        jButton2.setToolTipText("Toernooi");
         jButton2.setBorder(null);
         jButton2.setBorderPainted(false);
         jButton2.setContentAreaFilled(false);
@@ -84,6 +86,7 @@ public class Hoofdscherm extends javax.swing.JFrame {
         });
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/users.png"))); // NOI18N
+        jButton3.setToolTipText("Spelers");
         jButton3.setBorder(null);
         jButton3.setBorderPainted(false);
         jButton3.setContentAreaFilled(false);
@@ -97,6 +100,7 @@ public class Hoofdscherm extends javax.swing.JFrame {
         });
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pairoffives/images/master.png"))); // NOI18N
+        jButton4.setToolTipText("Masterclass");
         jButton4.setBorder(null);
         jButton4.setBorderPainted(false);
         jButton4.setContentAreaFilled(false);
