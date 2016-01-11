@@ -6,8 +6,6 @@
 package pairoffives;
 
 import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,8 +14,8 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JTable;
 import javax.swing.WindowConstants;
 
 /**
@@ -33,7 +31,7 @@ public class toernooiForm extends javax.swing.JFrame {
         initComponents();
     }
     DefaultTableModel tablemodel = new DefaultTableModel();
-        
+
     public void toernooiOverzicht() {
 
         int id;
@@ -83,6 +81,7 @@ public class toernooiForm extends javax.swing.JFrame {
             }
             toernooiTable.setAutoResizeMode(toernooiTable.AUTO_RESIZE_OFF);
             toernooiTable.setModel(tablemodel);
+            toernooiTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         } catch (Exception ex) {
 
@@ -338,17 +337,17 @@ public class toernooiForm extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         int toernooiID = 0;
         String toernooiNaam = naamField.getText();
-        
+
         try {
             toernooiID = Integer.parseInt(jLabel8.getText());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Toernooi ID is niet gevonden.");
-        }       
-            
+        }
+
         if (toernooiID > 0) {
             RoundsForm roundsForm = new RoundsForm(toernooiID, toernooiNaam);
             roundsForm.setVisible(true);
-        }        
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void soortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_soortFieldActionPerformed
@@ -401,10 +400,10 @@ public class toernooiForm extends javax.swing.JFrame {
         } catch (SQLException e) {
             System.out.println("Fout bij opslaan speler: " + e);
         } catch (Exception e) {
-            
+
         }
     }
-    
+
     public void toernooiVerwijderen() {
 
         try {
@@ -430,7 +429,7 @@ public class toernooiForm extends javax.swing.JFrame {
         }
 
     }
-    
+
     public void toernooiWijzigen() {
 
         try {
@@ -462,8 +461,7 @@ public class toernooiForm extends javax.swing.JFrame {
             System.out.println(ex);
         }
     }
-    
-    
+
     /**
      * @param args the command line arguments
      */

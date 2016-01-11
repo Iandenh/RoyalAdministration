@@ -92,7 +92,11 @@ public class ToernooiSpelersForm extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable1 = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                return false;   //Disallow the editing of any cell
+            }
+        };
         jLabel1 = new javax.swing.JLabel();
         deleteButton = new javax.swing.JButton();
 
