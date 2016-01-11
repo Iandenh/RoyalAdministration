@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+
 /**
  *
  * @author Yol Nakanishi
@@ -22,15 +23,13 @@ public class Masterclass extends javax.swing.JFrame {
     /**
      * Creates new form Masterclass
      */
-    
-
     DefaultComboBoxModel comboBox1 = new DefaultComboBoxModel();
-    DefaultComboBoxModel comboBox2 = new DefaultComboBoxModel();     
+    DefaultComboBoxModel comboBox2 = new DefaultComboBoxModel();
+
     public void setSpeler() {
 
+        try {
 
-        try{
-            
             comboBox1.removeAllElements();
 
             Connection conn = SimpleDataSourceV2.getConnection();
@@ -39,16 +38,15 @@ public class Masterclass extends javax.swing.JFrame {
 
             ResultSet result = stat.executeQuery("select * from speler");
 
-
             while (result.next()) {
-                
+
                 ModelItem item = new ModelItem();
-                
+
                 item.naam = result.getString("naam");
                 item.ratingpunten = result.getInt("rating");
                 comboBox1.addElement(item);
             }
-            
+
             jComboBox1.setModel(comboBox1);
 
         } catch (Exception ex) {
@@ -58,13 +56,16 @@ public class Masterclass extends javax.swing.JFrame {
         }
 
     }
-    
-    public void setMasterclass(){
-    
+
+    public void setMasterclass() {
+
         try {
             Connection conn = SimpleDataSourceV2.getConnection();
+            
             Statement stat = conn.createStatement();
-            ResultSet result = stat.executeQuery("select * from masterclass"); 
+            
+            ResultSet result = stat.executeQuery("select * from masterclass");
+            
             while (result.next()) {
 
                 ModelItem item = new ModelItem();
@@ -72,54 +73,56 @@ public class Masterclass extends javax.swing.JFrame {
                 item.kosten = result.getDouble("prijs");
                 item.maxDeelnemers = result.getInt("max_deelnemers");
                 item.minRatingpunten = result.getInt("min_rating");
-                
-                //System.out.println(item.minRatingpunten);
 
                 comboBox2.addElement(item);
 
             }
 
-            jComboBox2.setModel(comboBox2);            
-        } catch(Exception ex){
+            jComboBox2.setModel(comboBox2);
+            
+        } catch (Exception ex) {
             System.out.println(ex);
         }
-        
-        
+
     }
-    
-    
-    public void inschrijvenMasterclass(){
+
+    public void inschrijvenMasterclass() {
+        
         ArrayList<String> object = new ArrayList<String>();
 
-        
-        try{
+        try {
+            
             Connection conn = SimpleDataSourceV2.getConnection();
-            
-            ModelItem box1 = (ModelItem)jComboBox1.getSelectedItem();
-            ModelItem box2 = (ModelItem)jComboBox2.getSelectedItem();
-            double betaling = Double.parseDouble(jLabel5.getText());
-            
-            String prepSqlStatement = "INSERT INTO deelnemer (speler_id,masterclass_id,betaling) VALUES (?, ?, ?)";
-            PreparedStatement stat = conn.prepareStatement(prepSqlStatement);            
+
+            ModelItem box1 = (ModelItem) jComboBox1.getSelectedItem();
+            ModelItem box2 = (ModelItem) jComboBox2.getSelectedItem();
+            double betaling = Double.parseDouble(jTextField1.getText());
+
+            String prepSqlStatement = "INSERT INTO masterclass_sessie (speler_id, masterclass_id, betaling) VALUES (?, ?, ?)";
+            PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
             stat.setInt(1, box1.id);
             stat.setInt(2, box2.id);
             stat.setString(3, jTextField1.getText());
 
             
-            //check geld & rating
-            if(box2.minRatingpunten >= box1.ratingpunten){
-                
-            JOptionPane.showMessageDialog(null, "De speler heeft een te lage rating");
+            if (box2.minRatingpunten >= box1.ratingpunten) {
+
+                JOptionPane.showMessageDialog(null, "De speler heeft een te lage rating");
             }
-                
-            if (betaling < box2.kosten) {
+            else if (betaling > box2.kosten) {
+
+                JOptionPane.showMessageDialog(null, "Je kan niet meer inleggeld vragen dan het inleg bedrag voor de masterclass " + box2.naam);
+
+                return;
+            }
+            else if (betaling < box2.kosten) {
 
                 JOptionPane.showMessageDialog(null, "Speler heeft niet genoeg betaald en kan dan niet ingeschreven worden voor de masterclass " + box2.naam);
                 
                 return;
             }
 
-            ResultSet result = stat.executeQuery("select speler_id from deelnemer where masterclass_id = " + box2.id);
+            ResultSet result = stat.executeQuery("select speler_id from masterclass_sessie where masterclass_id = " + box2.id);
 
             while (result.next()) {
 
@@ -137,22 +140,19 @@ public class Masterclass extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Speler heeft zich al ingeschreven voor de masterclass " + box2.naam);
 
                     stat.close();
-                    
-                    return; 
+
+                    return;
                 }
-                
-                
+
             }
-            
-            
+
             JOptionPane.showMessageDialog(null, "Speler " + box1 + " heeft zich succesvol ingeschreven voor de masterclass " + box2);
             stat.setDouble(3, (betaling));
             int effectedRecords = stat.executeUpdate();
             stat.close();
-                    
+
             System.out.println(object.size());
-        
-        
+
             //Vullen_Spelers();
         } catch (SQLException e) {
 
@@ -164,6 +164,7 @@ public class Masterclass extends javax.swing.JFrame {
         }
 
     }
+
     public Masterclass() {
         initComponents();
     }
@@ -311,14 +312,13 @@ public class Masterclass extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
-                                           
 
         ModelItem String = (ModelItem) jComboBox2.getSelectedItem();
         jLabel4.setText("Max deelnemers: " + Integer.toString(String.maxDeelnemers));
         jLabel5.setText("Min ratingpunten: " + Integer.toString(String.minRatingpunten));
         jLabel7.setText("Kosten: " + Double.toString(String.kosten));
 
-             // TODO add your handling code here:
+        // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
     /**

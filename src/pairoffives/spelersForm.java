@@ -81,9 +81,9 @@ public class spelersForm extends javax.swing.JFrame {
                     woonplaats, telnr, email, gewonnen, verloren, rating});
 
             }
+            
             jTable1.setAutoResizeMode(jTable1.AUTO_RESIZE_OFF);
             jTable1.setModel(tablemodel);
-            
             
         } catch (Exception ex) {
 
