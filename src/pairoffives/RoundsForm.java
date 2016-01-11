@@ -6,6 +6,7 @@
 package pairoffives;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -22,6 +24,7 @@ import javax.swing.JOptionPane;
  */
 public class RoundsForm extends javax.swing.JFrame {
 
+    Connection conn = null;
     private final List<RoundRegistrationObject> roundRegistrationObjectsList = new ArrayList<RoundRegistrationObject>() {};
     private final List<Integer> roundsList = new ArrayList<Integer>() {};
     private final Map<Integer, List<Integer>> tablesPerRoundMap = new HashMap<Integer, List<Integer>>() {};   
@@ -47,6 +50,9 @@ public class RoundsForm extends javax.swing.JFrame {
         
         // Vanuit de properties, de lijsten vullen.
         FillComboBoxes();
+        
+        // Sluit zooi
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
     
     private boolean GetData(int toernooiID){
@@ -57,7 +63,7 @@ public class RoundsForm extends javax.swing.JFrame {
         
          try {
 
-            Connection conn = SimpleDataSourceV2.getConnection();
+            conn = SimpleDataSourceV2.getConnection();
 
             Statement stat = conn.createStatement();
             ResultSet result = stat.executeQuery("SELECT * FROM RoundRegistration WHERE ToernooiID ='" + toernooiID + "'");
@@ -97,7 +103,7 @@ public class RoundsForm extends javax.swing.JFrame {
             
             try {
 
-                Connection conn = SimpleDataSourceV2.getConnection();
+                conn = SimpleDataSourceV2.getConnection();
 
                 Statement stat = conn.createStatement();
                 ResultSet result = stat.executeQuery("SELECT * FROM RoundRegistration WHERE ToernooiID ='" + toernooiID + "' AND Ronde='" + ronde + "'");
@@ -135,7 +141,7 @@ public class RoundsForm extends javax.swing.JFrame {
                 
                 try {
 
-                    Connection conn = SimpleDataSourceV2.getConnection();
+                    conn = SimpleDataSourceV2.getConnection();
 
                     Statement stat = conn.createStatement();
                     ResultSet result = stat.executeQuery("SELECT * FROM RoundRegistration WHERE ToernooiID ='" + toernooiID + "' AND Ronde='" + ronde + "' AND TafelID ='" + tafel +"'");
@@ -166,7 +172,7 @@ public class RoundsForm extends javax.swing.JFrame {
         Map<Integer, Integer> spelerIDs = new HashMap<Integer, Integer>() {};
         try {
 
-                Connection conn = SimpleDataSourceV2.getConnection();
+                conn = SimpleDataSourceV2.getConnection();
 
                 Statement stat = conn.createStatement();
                 ResultSet result = stat.executeQuery("SELECT * FROM Deelnemer WHERE toernooi_ID ='" + toernooiID + "'");
@@ -190,7 +196,7 @@ public class RoundsForm extends javax.swing.JFrame {
         for (Map.Entry<Integer, Integer> entry : spelerIDs.entrySet()) {
             try {
 
-                Connection conn = SimpleDataSourceV2.getConnection();
+                conn = SimpleDataSourceV2.getConnection();
 
                 Statement stat = conn.createStatement();
                 ResultSet result = stat.executeQuery("SELECT * FROM Speler WHERE ID ='" + entry.getValue() + "'");
@@ -200,6 +206,7 @@ public class RoundsForm extends javax.swing.JFrame {
                     deelnemer.DeelnemerID = entry.getKey();
                     deelnemer.ID = result.getInt("ID");
                     deelnemer.Naam = result.getString("Naam");
+                    
                     
                     if (deelnemersList.get(entry.getKey()) == null) {
                         deelnemersList.put(entry.getKey(), deelnemer);
@@ -272,11 +279,11 @@ public class RoundsForm extends javax.swing.JFrame {
         jList1.setModel(spelers);
         // -- Spelers zetten --
     }
-    
-    public class TafelItem {
+        
+    private class TafelItem {
         Integer ID = 0;
         
-        public TafelItem (int ID){
+        private TafelItem (int ID){
             this.ID = ID;
         }
         
@@ -296,7 +303,7 @@ public class RoundsForm extends javax.swing.JFrame {
             
         }
         
-        private Deelnemer(int ID, int deelnemerID, String naam) {
+        private Deelnemer(int ID, int deelnemerID, String naam, int ronde, int tafelID) {
             this.ID = ID;
             this.DeelnemerID = deelnemerID;
             this.Naam = naam;
@@ -310,13 +317,13 @@ public class RoundsForm extends javax.swing.JFrame {
         
     }
     
-    public class RoundRegistrationObject {
+    private class RoundRegistrationObject {
         int ID = 0;
         int Ronde = 0;
         int DeelnemerID = 0;
         boolean Uitslag = false;
         
-        public RoundRegistrationObject(int ID, int ronde, int deelnemerID, boolean uitslag) {
+        private RoundRegistrationObject(int ID, int ronde, int deelnemerID, boolean uitslag) {
             this.ID = ID;
             this.Ronde = ronde;
             this.DeelnemerID = deelnemerID;
@@ -324,12 +331,12 @@ public class RoundsForm extends javax.swing.JFrame {
         }
     }
     
-        public class Tafel {
+    private class Tafel {
         Integer ID = 0;
         int ToernooiID = 0;
         int MaxAantalSpelers = 0;
         
-        public Tafel(int ID, int toernooiID, int maxAantalSpelers) {
+        private Tafel(int ID, int toernooiID, int maxAantalSpelers) {
             this.ID = ID;
             this.ToernooiID = toernooiID;
             this.MaxAantalSpelers = maxAantalSpelers;
@@ -445,6 +452,24 @@ public class RoundsForm extends javax.swing.JFrame {
         }
 
         jComboBox2.setModel(tafels);    
+        
+        int huidigeRonde = (int) jComboBox1.getSelectedItem();
+        jButton1.setText("Promoveren tot ronde " + (huidigeRonde + 1));
+        
+        // Zet speler tabel
+        int ronde = (int) jComboBox1.getSelectedItem();
+        int tafel = (int) jComboBox2.getSelectedItem();
+        
+        DefaultComboBoxModel spelers = new DefaultComboBoxModel();
+        
+        List<Integer> deelnemers = tafelDeelnemersList.get(ronde+"_"+tafel);
+                
+        for (int ID : deelnemers) {
+            Deelnemer deelnemer = deelnemersList.get(ID);
+            spelers.addElement(deelnemer);
+        }
+        
+        jList1.setModel(spelers);
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
@@ -469,7 +494,31 @@ public class RoundsForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (jList1.getSelectedIndex() != -1 ){
+        if (jList1.getSelectedIndex() != -1){
+        
+            Deelnemer selectedItem = (Deelnemer) jList1.getSelectedValue();
+            
+            int reply = JOptionPane.showConfirmDialog(null, "Weet je zeker dat je de speler '" + selectedItem.Naam + "' wilt promoveren tot de volgender ronde?", "Weet je het zeker", JOptionPane.YES_NO_OPTION);
+            int huidigeRonde = (int) jComboBox1.getSelectedIndex();
+            int huidigeTafel = (int) jComboBox2.getSelectedIndex();
+            int volgendeRonde = huidigeRonde += 1;
+            
+            if (reply == JOptionPane.YES_OPTION) {
+                try {
+                    conn = SimpleDataSourceV2.getConnection();
+                    PreparedStatement result = conn.prepareStatement("UPDATE RoundRegistration SET uitslag=? WHERE DeelnemerID =" + selectedItem.ID);
+                
+                    System.out.println(result.toString());
+                    
+                    result.setString(1, "1");
+                
+                    result.executeUpdate();
+                } catch (Exception ex){
+                    System.out.println(ex);
+                }
+            }         
+            
+        } else {
             JOptionPane.showMessageDialog(null, "Je moet eerst een speler selecteren!");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
