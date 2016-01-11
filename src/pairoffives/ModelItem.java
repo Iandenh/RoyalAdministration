@@ -13,6 +13,7 @@ public class ModelItem {
     
     
     public int id;
+    public int masterclass_id;
     public String naam;
     public String achternaam;
     public String adres;

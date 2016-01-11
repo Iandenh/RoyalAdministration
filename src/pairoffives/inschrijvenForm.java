@@ -89,19 +89,68 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
     }
 
-    public void Vullen_Deelnemers() {
+    public int Vullen_Deelnemers() {
 
         try {
 
             Connection conn = SimpleDataSourceV2.getConnection();
 
             Statement stat = conn.createStatement();
+            ModelItem combobox1 = (ModelItem) jComboBox1.getSelectedItem();
+            ResultSet result = stat.executeQuery("select * from deelnemer where speler_id = " + combobox1.id);
 
-            ResultSet result = stat.executeQuery("select speler_id from deelnemer");
+            if (result.next()) {
+
+                return result.getInt("id");
+
+            }
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+
+        return 0;
+
+    }
+
+    public int id;
+    public void checkTafel() {
+
+        ArrayList<String> obj3 = new ArrayList<String>();
+
+        try {
+
+            ModelItem combobox2 = (ModelItem) jComboBox2.getSelectedItem();
+            ModelItem combobox1 = (ModelItem) jComboBox1.getSelectedItem();
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+
+            ResultSet result = stat.executeQuery("SELECT T.* FROM TAFEL AS T JOIN RoundRegistration AS RR ON RR.TafelID = T.ID "
+                    + "WHERE RR.RONDE = 1 AND ToernooiID = " + combobox2.id + " GROUP BY T.ID HAVING COUNT(RR.ID) < T.Max_Aantal_spelers LIMIT 1"); //credits Thomas
 
             ModelItem item = new ModelItem();
+            while (result.next()) {
 
-            item.speler_id = result.getInt("speler_id");
+                item.id = result.getInt("id");
+                id = result.getInt("id");
+                item.toernooi_id = result.getInt("toernooi_id");
+                item.maxDeelnemers = result.getInt("Max_aantal_spelers");
+
+            }
+
+            String prepSqlStatement = "INSERT INTO RoundRegistration (Ronde, ToernooiID, TafelID, DeelnemerID) VALUES (?, ?, ?, ?)";
+
+            PreparedStatement stat1 = conn.prepareStatement(prepSqlStatement);
+
+            stat1.setInt(1, 1);
+            stat1.setInt(2, combobox2.id);
+            stat1.setInt(3, id);
+            stat1.setInt(4, Vullen_Deelnemers());
+
+            stat1.executeUpdate();
 
         } catch (Exception ex) {
 
@@ -117,10 +166,12 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
         try {
 
-             //jTextField2.setText(null);
+            //jTextField2.setText(null);
             ModelItem combobox1 = (ModelItem) jComboBox1.getSelectedItem();
             ModelItem combobox2 = (ModelItem) jComboBox2.getSelectedItem();
             double betaling = Double.parseDouble(jTextField2.getText());
+            int maxSpelers = 0;
+            int ingeschrevenSpelers = 0;
 
             Connection conn = SimpleDataSourceV2.getConnection();
 
@@ -136,20 +187,43 @@ public class inschrijvenForm extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Je kan niet meer inleggeld vragen dan het inleg bedrag voor het toernooi " + combobox2.naam);
 
                 return;
-                
+
             } else if (betaling < combobox2.kosten) {
 
                 JOptionPane.showMessageDialog(null, "Speler heeft niet genoeg betaald en kan dan niet ingeschreven worden voor het toernooi " + combobox2.naam);
-                
+
+                return;
+
+            }
+
+            ResultSet result1 = stat.executeQuery("SELECT SUM(Max_aantal_spelers) as Max_aantal_spelers FROM TAFEL WHERE Toernooi_ID = " + combobox2.id);
+
+            while (result1.next()) {
+
+                maxSpelers = result1.getInt("Max_aantal_spelers");
+
+            }
+
+            ResultSet result2 = stat.executeQuery("SELECT COUNT(*) as aantal FROM RoundRegistration WHERE ToernooiID = " + combobox2.id);
+
+            while (result2.next()) {
+
+                ingeschrevenSpelers = result2.getInt("aantal");
+
+            }
+
+            if (ingeschrevenSpelers >= maxSpelers) {
+
+                JOptionPane.showMessageDialog(null, "Max aantal deelnemers voor dit toernooi is bereikt");
                 return;
             }
 
-            ResultSet result = stat.executeQuery("select speler_id from deelnemer where toernooi_id = " + combobox2.id);
+            ResultSet result3 = stat.executeQuery("select speler_id from deelnemer where toernooi_id = " + combobox2.id);
 
-            while (result.next()) {
+            while (result3.next()) {
 
-                obj.add(Integer.toString(result.getInt("speler_id")));
-                //obj1.add(Integer.toString(result.getInt("toernooi_id")));
+                obj.add(Integer.toString(result3.getInt("speler_id")));
+
             }
 
             String choosen;
@@ -160,22 +234,22 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
                     choosen = obj.get(i);
                     System.out.println(obj.get(i));
-                    JOptionPane.showMessageDialog(null, "Speler "+ combobox1 +" heeft zich al ingeschreven voor het toernooi " + combobox2.naam);
+                    JOptionPane.showMessageDialog(null, "Speler " + combobox1 + " heeft zich al ingeschreven voor het toernooi " + combobox2.naam);
 
                     stat.close();
-                    
-                    return; 
+
+                    return;
                 }
-                
-                
+
             }
-            
-            
+
             JOptionPane.showMessageDialog(null, "Speler " + combobox1 + " heeft zich succesvol ingeschreven voor het toernooi " + combobox2);
             stat.setDouble(3, (betaling));
             int effectedRecords = stat.executeUpdate();
             stat.close();
-                    
+
+            checkTafel();
+
             System.out.println(obj.size());
 
             //Vullen_Spelers();
@@ -362,11 +436,11 @@ public class inschrijvenForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
+
         spelersForm spelersForm = new spelersForm();
         spelersForm.spelers_overzicht();
         spelersForm.setVisible(true);
-        
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
