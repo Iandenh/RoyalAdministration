@@ -55,7 +55,7 @@ public class toernooiForm extends javax.swing.JFrame {
             // refreshing table na het wijzigen van een speler.
             tablemodel.setColumnCount(0);
             tablemodel.setNumRows(0);
-            jTable1.setModel(tablemodel);
+            toernooiTable.setModel(tablemodel);
 
             tablemodel.addColumn("id");
             tablemodel.addColumn("locatie");
@@ -81,8 +81,8 @@ public class toernooiForm extends javax.swing.JFrame {
                     kosten, datum, min_deelnemers, max_deelnemers});
 
             }
-            jTable1.setAutoResizeMode(jTable1.AUTO_RESIZE_OFF);
-            jTable1.setModel(tablemodel);
+            toernooiTable.setAutoResizeMode(toernooiTable.AUTO_RESIZE_OFF);
+            toernooiTable.setModel(tablemodel);
 
         } catch (Exception ex) {
 
@@ -103,7 +103,7 @@ public class toernooiForm extends javax.swing.JFrame {
 
         jLabel9 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable(){
+        toernooiTable = new javax.swing.JTable(){
             public boolean isCellEditable(int rowIndex, int colIndex) {
                 return false;   //Disallow the editing of any cell
             }
@@ -115,35 +115,33 @@ public class toernooiForm extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        locatieField = new javax.swing.JTextField();
+        naamField = new javax.swing.JTextField();
+        soortField = new javax.swing.JTextField();
+        kostenField = new javax.swing.JTextField();
+        datumField = new javax.swing.JTextField();
+        minField = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
+        maxField = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(1074, 470));
         setMinimumSize(new java.awt.Dimension(1074, 470));
-        setPreferredSize(new java.awt.Dimension(1074, 470));
         setResizable(false);
         getContentPane().setLayout(null);
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel9.setText("Toernooi overzicht");
         getContentPane().add(jLabel9);
-        jLabel9.setBounds(630, 30, 160, 22);
+        jLabel9.setBounds(630, 30, 190, 22);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        toernooiTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -154,15 +152,15 @@ public class toernooiForm extends javax.swing.JFrame {
 
             }
         ));
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+        toernooiTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jTable1MousePressed(evt);
+                toernooiTableMousePressed(evt);
             }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
+                toernooiTableMouseClicked(evt);
             }
         });
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(toernooiTable);
 
         getContentPane().add(jScrollPane2);
         jScrollPane2.setBounds(460, 80, 561, 257);
@@ -199,30 +197,30 @@ public class toernooiForm extends javax.swing.JFrame {
         jLabel6.setText("Minimaal deelnemers:");
         getContentPane().add(jLabel6);
         jLabel6.setBounds(20, 290, 130, 20);
-        getContentPane().add(jTextField1);
-        jTextField1.setBounds(150, 80, 150, 25);
-        getContentPane().add(jTextField2);
-        jTextField2.setBounds(150, 120, 150, 25);
+        getContentPane().add(locatieField);
+        locatieField.setBounds(150, 80, 150, 25);
+        getContentPane().add(naamField);
+        naamField.setBounds(150, 120, 150, 25);
 
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        soortField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                soortFieldActionPerformed(evt);
             }
         });
-        getContentPane().add(jTextField3);
-        jTextField3.setBounds(150, 160, 150, 25);
-        getContentPane().add(jTextField4);
-        jTextField4.setBounds(150, 200, 150, 25);
-        getContentPane().add(jTextField5);
-        jTextField5.setBounds(150, 240, 150, 25);
+        getContentPane().add(soortField);
+        soortField.setBounds(150, 160, 150, 25);
+        getContentPane().add(kostenField);
+        kostenField.setBounds(150, 200, 150, 25);
+        getContentPane().add(datumField);
+        datumField.setBounds(150, 240, 150, 25);
 
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+        minField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
+                minFieldActionPerformed(evt);
             }
         });
-        getContentPane().add(jTextField6);
-        jTextField6.setBounds(150, 280, 150, 30);
+        getContentPane().add(minField);
+        minField.setBounds(150, 280, 150, 30);
 
         jButton1.setText("Toernooi opslaan");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -244,15 +242,15 @@ public class toernooiForm extends javax.swing.JFrame {
         getContentPane().add(jLabel11);
         jLabel11.setBounds(140, 50, 34, 0);
         getContentPane().add(jLabel8);
-        jLabel8.setBounds(110, 44, 40, 20);
+        jLabel8.setBounds(150, 50, 40, 20);
 
-        jTextField7.addActionListener(new java.awt.event.ActionListener() {
+        maxField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField7ActionPerformed(evt);
+                maxFieldActionPerformed(evt);
             }
         });
-        getContentPane().add(jTextField7);
-        jTextField7.setBounds(150, 320, 150, 30);
+        getContentPane().add(maxField);
+        maxField.setBounds(150, 320, 150, 30);
 
         jLabel7.setText("Maximaal deelnemers:");
         getContentPane().add(jLabel7);
@@ -291,21 +289,21 @@ public class toernooiForm extends javax.swing.JFrame {
         toernooiWijzigen();
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
+    private void minFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField6ActionPerformed
+    }//GEN-LAST:event_minFieldActionPerformed
 
-    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
+    private void maxFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maxFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField7ActionPerformed
+    }//GEN-LAST:event_maxFieldActionPerformed
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+    private void toernooiTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toernooiTableMouseClicked
         try {
 
             Connection conn = SimpleDataSourceV2.getConnection();
 
-            int row = jTable1.getSelectedRow();
-            String Table_click = (jTable1.getModel().getValueAt(row, 0).toString());
+            int row = toernooiTable.getSelectedRow();
+            String Table_click = (toernooiTable.getModel().getValueAt(row, 0).toString());
 
             Statement stat = conn.createStatement();
             ResultSet result = stat.executeQuery("select * from toernooi where id ='" + Table_click + "'");
@@ -314,32 +312,32 @@ public class toernooiForm extends javax.swing.JFrame {
 
                 int add0 = result.getInt("id");
                 jLabel8.setText(Integer.toString(add0));
-                String add1 = result.getString("locatie");
-                String add2 = result.getString("naam");
-                String add3 = result.getString("soorttoernooi");
-                String add4 = result.getString("kosten");
-                String add5 = result.getString("datum");
-                String add6 = result.getString("min_deelnemers");
-                String add7 = result.getString("max_deelnemers");
+                String locatie = result.getString("locatie");
+                String naam = result.getString("naam");
+                String soorttoernooi = result.getString("soorttoernooi");
+                String kosten = result.getString("kosten");
+                String datum = result.getString("datum");
+                String minDeelnemers = result.getString("min_deelnemers");
+                String maxDeelnemers = result.getString("max_deelnemers");
 
-                jTextField1.setText(add1);
-                jTextField2.setText(add2);
-                jTextField3.setText(add3);
-                jTextField4.setText(add4);
-                jTextField5.setText(add5);
-                jTextField6.setText(add6);
-                jTextField7.setText(add7);
+                locatieField.setText(locatie);
+                naamField.setText(naam);
+                soortField.setText(soorttoernooi);
+                kostenField.setText(kosten);
+                datumField.setText(datum);
+                minField.setText(minDeelnemers);
+                maxField.setText(maxDeelnemers);
             }
 
         } catch (Exception ex) {
 
             System.out.println(ex);
         }
-    }//GEN-LAST:event_jTable1MouseClicked
+    }//GEN-LAST:event_toernooiTableMouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         int toernooiID = 0;
-        String toernooiNaam = jTextField2.getText();
+        String toernooiNaam = naamField.getText();
         
         try {
             toernooiID = Integer.parseInt(jLabel8.getText());
@@ -353,25 +351,25 @@ public class toernooiForm extends javax.swing.JFrame {
         }        
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void soortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_soortFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+    }//GEN-LAST:event_soortFieldActionPerformed
 
-    private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed
+    private void toernooiTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toernooiTableMousePressed
         // TODO add your handling code here:
         //JTable JTable1 = (JTable) evt.getSource();
         Point p = evt.getPoint();
-        int row = jTable1.rowAtPoint(p);
+        int row = toernooiTable.rowAtPoint(p);
         if (evt.getClickCount() == 2) {
             // your valueChanged overridden method 
-            int selectedObject = (int) jTable1.getModel().getValueAt(row, 0);
+            int selectedObject = (int) toernooiTable.getModel().getValueAt(row, 0);
             System.out.println(selectedObject);
             ToernooiSpelersForm toernooiSpeler = new ToernooiSpelersForm(selectedObject);
             toernooiSpeler.setVisible(true);
             toernooiSpeler.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            toernooiSpeler.setTitle((String) jTable1.getModel().getValueAt(row, 2));
+            toernooiSpeler.setTitle((String) toernooiTable.getModel().getValueAt(row, 2));
         }
-    }//GEN-LAST:event_jTable1MousePressed
+    }//GEN-LAST:event_toernooiTableMousePressed
     public void toernooiOpslaan() {
 
         try {
@@ -380,17 +378,17 @@ public class toernooiForm extends javax.swing.JFrame {
 
             String prepSqlStatement = "INSERT INTO toernooi (locatie, naam,soorttoernooi,kosten,datum,min_deelnemers,max_deelnemers) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
-            stat.setString(1, jTextField1.getText());
-            stat.setString(2, jTextField2.getText());
-            stat.setString(3, jTextField3.getText());
-            stat.setString(4, jTextField4.getText());
+            stat.setString(1, locatieField.getText());
+            stat.setString(2, naamField.getText());
+            stat.setString(3, soortField.getText());
+            stat.setString(4, kostenField.getText());
             SimpleDateFormat from = new SimpleDateFormat("dd/MM/yyyy");
             SimpleDateFormat to = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = from.parse(jTextField5.getText());       // 01/02/2014
+            Date date = from.parse(datumField.getText());       // 01/02/2014
             String mysqlString = to.format(date);     // 2014-02-01
             stat.setString(5, mysqlString);
-            stat.setString(6, jTextField6.getText());
-            stat.setString(7, jTextField7.getText());
+            stat.setString(6, minField.getText());
+            stat.setString(7, maxField.getText());
 
             int effectedRecords = stat.executeUpdate();
 
@@ -438,18 +436,18 @@ public class toernooiForm extends javax.swing.JFrame {
         try {
 
             Connection conn = SimpleDataSourceV2.getConnection();
-            PreparedStatement result = conn.prepareStatement("update toernooi SET locatie=?, naam=?, soorttoernooi=?, kosten=?, datum=?, min_deelnemers=?, max_deelnemers=?,  where id =" + jLabel8.getText());
-            result.setString(1, jTextField1.getText());
-            result.setString(2, jTextField2.getText());
-            result.setString(3, jTextField3.getText());
-            result.setString(4, jTextField4.getText());
+            PreparedStatement result = conn.prepareStatement("update toernooi SET locatie=?, naam=?, soorttoernooi=?, kosten=?, datum=?, min_deelnemers=?, max_deelnemers=? where id = " + jLabel8.getText());
+            result.setString(1, locatieField.getText());
+            result.setString(2, naamField.getText());
+            result.setString(3, soortField.getText());
+            result.setString(4, kostenField.getText());
             SimpleDateFormat from = new SimpleDateFormat("dd/MM/yyyy");
             SimpleDateFormat to = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = from.parse(jTextField5.getText());       // 01/02/2014
+            Date date = from.parse(datumField.getText());       // 01/02/2014
             String mysqlString = to.format(date);     // 2014-02-01
             result.setString(5, mysqlString);
-            result.setString(6, jTextField6.getText());
-            result.setString(7, jTextField7.getText());
+            result.setString(6, minField.getText());
+            result.setString(7, maxField.getText());
 
             int res = result.executeUpdate();
 
@@ -502,6 +500,7 @@ public class toernooiForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField datumField;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -519,13 +518,12 @@ public class toernooiForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField kostenField;
+    private javax.swing.JTextField locatieField;
+    private javax.swing.JTextField maxField;
+    private javax.swing.JTextField minField;
+    private javax.swing.JTextField naamField;
+    private javax.swing.JTextField soortField;
+    private javax.swing.JTable toernooiTable;
     // End of variables declaration//GEN-END:variables
 }
