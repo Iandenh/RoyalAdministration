@@ -369,14 +369,18 @@ public class toernooiForm extends javax.swing.JFrame {
             toernooiSpeler.setTitle((String) toernooiTable.getModel().getValueAt(row, 2));
         }
     }//GEN-LAST:event_toernooiTableMousePressed
-    public void toernooiOpslaan() {
+    private void toernooiOpslaan() {
 
+            if(Integer.parseInt(maxField.getText()) % 10 != 0){
+                JOptionPane.showMessageDialog(null, "Max deelnemer moet een veelvoud zijn van 10");
+                return;
+            }
         try {
 
             Connection conn = SimpleDataSourceV2.getConnection();
-
+            
             String prepSqlStatement = "INSERT INTO toernooi (locatie, naam,soorttoernooi,kosten,datum,min_deelnemers,max_deelnemers) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
+            PreparedStatement stat = conn.prepareStatement(prepSqlStatement, Statement.RETURN_GENERATED_KEYS);
             stat.setString(1, locatieField.getText());
             stat.setString(2, naamField.getText());
             stat.setString(3, soortField.getText());
@@ -390,21 +394,43 @@ public class toernooiForm extends javax.swing.JFrame {
             stat.setString(7, maxField.getText());
 
             int effectedRecords = stat.executeUpdate();
-
+            int toernooiId = 0;
+            ResultSet rs = stat.getGeneratedKeys();
+            if (rs.next()){
+                toernooiId = rs.getInt(1);
+            }
+            maakTafels(toernooiId, Integer.parseInt(maxField.getText()));
             //Table update          
             toernooiOverzicht();
 
-            JOptionPane.showMessageDialog(null, "Speler opgeslagen");
+            JOptionPane.showMessageDialog(null, "Toernooi opgeslagen");
 
             stat.close();
         } catch (SQLException e) {
-            System.out.println("Fout bij opslaan speler: " + e);
+            System.out.println("Fout bij opslaan toernooi: " + e);
         } catch (Exception e) {
 
         }
     }
+    
+    private void maakTafels(int toernooiId, int maxdeelnemers) throws SQLException{ 
+       maakTafels(toernooiId, maxdeelnemers, 10);
+    }
+    
+    private void maakTafels(int toernooiId, int maxdeelnemers, int perTafel) throws SQLException{ 
+        Connection conn = SimpleDataSourceV2.getConnection();
 
-    public void toernooiVerwijderen() {
+        String prepSqlStatement = "INSERT INTO tafel (toernooi_id, max_aantal_spelers) VALUES (?, ?)";
+       for (int i = 0; i < (maxdeelnemers / perTafel); i++){
+           PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
+            stat.setInt(1, toernooiId);
+            stat.setInt(2, perTafel);
+            int effectedRecords = stat.executeUpdate();
+            stat.close();
+       }
+    }
+    
+    private void toernooiVerwijderen() {
 
         try {
 
@@ -430,7 +456,7 @@ public class toernooiForm extends javax.swing.JFrame {
 
     }
 
-    public void toernooiWijzigen() {
+    private void toernooiWijzigen() {
 
         try {
 
@@ -452,7 +478,7 @@ public class toernooiForm extends javax.swing.JFrame {
 
             toernooiOverzicht();
 
-            JOptionPane.showMessageDialog(null, "Speler gewijzigd");
+            JOptionPane.showMessageDialog(null, "Toernooi gewijzigd");
 
             result.close();
 
