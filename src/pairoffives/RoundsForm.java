@@ -33,9 +33,9 @@ public class RoundsForm extends javax.swing.JFrame {
     };
     private final Map<Integer, List<Integer>> tablesPerRoundMap = new HashMap<Integer, List<Integer>>() {
     };
-    private final Map<Integer, Deelnemer> deelnemersList = new HashMap<Integer, Deelnemer>() {
+    private final Map<Integer, Deelnemer> participantsList = new HashMap<Integer, Deelnemer>() {
     };
-    private final Map<String, List<Integer>> tafelDeelnemersList = new HashMap<String, List<Integer>>() {
+    private final Map<String, List<Integer>> tableParticipantsList = new HashMap<String, List<Integer>>() {
     };
 
     // Hi nakijker, meeste is gecomment, als het niet gecomment is dan was er geen tijd meer voor
@@ -171,7 +171,7 @@ public class RoundsForm extends javax.swing.JFrame {
                     value = false;
                 }
 
-                tafelDeelnemersList.put(ronde + "_" + tafel, deelnemerIDs);
+                tableParticipantsList.put(ronde + "_" + tafel, deelnemerIDs);
 
             }
         }
@@ -217,8 +217,8 @@ public class RoundsForm extends javax.swing.JFrame {
                     deelnemer.ID = result.getInt("ID");
                     deelnemer.Naam = result.getString("Naam");
 
-                    if (deelnemersList.get(entry.getKey()) == null) {
-                        deelnemersList.put(entry.getKey(), deelnemer);
+                    if (participantsList.get(entry.getKey()) == null) {
+                        participantsList.put(entry.getKey(), deelnemer);
                     }
                 }
 
@@ -233,6 +233,78 @@ public class RoundsForm extends javax.swing.JFrame {
         return value;
     }
 
+    private boolean getRoundLastRound(int huidigeRonde) {
+        // Is huidig geselecteerde ronde de laatste ronde?
+        boolean value = false;
+
+        try {
+            conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery("SELECT COUNT(DISTINCT TafelID) AS Tafels FROM RoundRegistration WHERE ToernooiID = " + ToernooiID + " AND Ronde = " + huidigeRonde);
+
+            if (result.next()) {
+                value = result.getInt("Tafels") == 1;
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+
+        return value;
+    }
+    
+    private void setGewonnenVerloren(int deelnemerID, boolean status) {
+        int aantal = 0;
+        int spelerID = 0;
+        // Ophalen info
+        try {
+
+                conn = SimpleDataSourceV2.getConnection();
+
+                String queryString;
+                
+                if (status) { // gewonnen 
+                    queryString = "SELECT S.Verloren AS Aantal, S.ID FROM Speler AS S Join Deelnemer AS D ON D.Speler_ID = S.ID WHERE D.ID = " + deelnemerID;
+                } else { // verloren
+                    queryString = "SELECT S.Gewonnen AS Aantal, S.ID FROM Speler AS S Join Deelnemer AS D ON D.Speler_ID = S.ID WHERE D.ID = " + deelnemerID;
+                }
+                
+                Statement stat = conn.createStatement();
+                ResultSet result = stat.executeQuery(queryString);
+
+                if (result.next()) {
+                    aantal = result.getInt("aantal");
+                    spelerID = result.getInt("ID");
+                }
+
+            } catch (Exception ex) {
+
+                System.out.println(ex);
+            }        
+        
+        // Zetten info
+        
+        try {
+            conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            String query;
+            
+            if (status) { 
+               query = "UPDATE Speler SET Gewonnen = ? WHERE ID = ?";
+            } else {
+               query = "UPDATE Speler SET Verloren = ? WHERE ID = ?"; 
+            }
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+
+            preparedStmt.setInt(1, aantal + 1);
+            preparedStmt.setInt(2, spelerID);
+            preparedStmt.executeUpdate();
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
+    
     private List<Integer> getAvailableTable(int ronde) {
         // Beschikbare tafel halen
         List<Integer> value = new ArrayList<Integer>() {};
@@ -297,6 +369,29 @@ public class RoundsForm extends javax.swing.JFrame {
         return value;
     }
 
+    private Map<Integer, Integer> getChosenWinners(int ronde) {
+        Map<Integer, Integer> value = new HashMap<Integer, Integer>() {};
+        
+        try {
+
+            conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery("SELECT (SELECT ID FROM RoundRegistration WHERE Ronde = " + ronde + " AND Uitslag = 1 LIMIT 1) AS '1', (SELECT ID FROM RoundRegistration WHERE Ronde = " + ronde + " AND Uitslag = 2 LIMIT 1) AS '2', (SELECT ID FROM RoundRegistration WHERE Ronde = " + ronde + " AND Uitslag = 3 LIMIT 1) AS '3'");
+
+            if (result.next()) {
+                value.put(1, result.getInt("1"));
+                value.put(2, result.getInt("2"));
+                value.put(3, result.getInt("3"));
+            }
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        
+        return value;
+    }
+    
     private void fillFields() {
         // ++ Rondes ++
         // Vullen van de jComboBox1 (rondes)
@@ -341,10 +436,10 @@ public class RoundsForm extends javax.swing.JFrame {
 
         DefaultComboBoxModel spelers = new DefaultComboBoxModel();
 
-        List<Integer> deelnemers = tafelDeelnemersList.get(ronde + "_" + tafel);
+        List<Integer> deelnemers = tableParticipantsList.get(ronde + "_" + tafel);
 
         for (int ID : deelnemers) {
-            Deelnemer deelnemer = deelnemersList.get(ID);
+            Deelnemer deelnemer = participantsList.get(ID);
             spelers.addElement(deelnemer);
         }
 
@@ -357,33 +452,23 @@ public class RoundsForm extends javax.swing.JFrame {
         int huidigeRonde = (int) jComboBox1.getSelectedItem();
         boolean lastRound = getRoundLastRound(huidigeRonde);
         if (lastRound) {
-            jButton1.setText("Promoveren tot winnaar van het toernooi");
+            Map<Integer, Integer> winners = getChosenWinners(huidigeRonde);
+            if (winners.get(1) == 0){
+                jButton1.setText("Promoveren tot winnaar van het toernooi");
+            } else if (winners.get(2) == 0) {
+                jButton1.setText("Promoveren tot tweede van het toernooi");
+            } else if (winners.get(3) == 0) {
+                jButton1.setText("Promoveren tot derde van het toernooi");
+            } else {
+                jButton1.setEnabled(false);
+            }
+            
         } else {
             jButton1.setText("Promoveren tot ronde " + (huidigeRonde + 1));
         }
 
     }
-
-    private boolean getRoundLastRound(int huidigeRonde) {
-        // Is huidig geselecteerde ronde de laatste ronde?
-        boolean value = false;
-
-        try {
-            conn = SimpleDataSourceV2.getConnection();
-
-            Statement stat = conn.createStatement();
-            ResultSet result = stat.executeQuery("SELECT COUNT(DISTINCT TafelID) AS Tafels FROM RoundRegistration WHERE ToernooiID = " + ToernooiID + " AND Ronde = " + huidigeRonde);
-
-            if (result.next()) {
-                value = result.getInt("Tafels") == 1;
-            }
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
-
-        return value;
-    }
-
+    
     private class Deelnemer {
 
         int ID = 0;
@@ -528,10 +613,10 @@ public class RoundsForm extends javax.swing.JFrame {
 
         DefaultComboBoxModel spelers = new DefaultComboBoxModel();
 
-        List<Integer> deelnemers = tafelDeelnemersList.get(ronde + "_" + tafel);
+        List<Integer> deelnemers = tableParticipantsList.get(ronde + "_" + tafel);
 
         for (int ID : deelnemers) {
-            Deelnemer deelnemer = deelnemersList.get(ID);
+            Deelnemer deelnemer = participantsList.get(ID);
             spelers.addElement(deelnemer);
         }
 
@@ -549,10 +634,10 @@ public class RoundsForm extends javax.swing.JFrame {
 
         DefaultComboBoxModel spelers = new DefaultComboBoxModel();
 
-        List<Integer> deelnemers = tafelDeelnemersList.get(ronde + "_" + tafel);
+        List<Integer> deelnemers = tableParticipantsList.get(ronde + "_" + tafel);
 
         for (int ID : deelnemers) {
-            Deelnemer deelnemer = deelnemersList.get(ID);
+            Deelnemer deelnemer = participantsList.get(ID);
             spelers.addElement(deelnemer);
         }
 
@@ -566,7 +651,6 @@ public class RoundsForm extends javax.swing.JFrame {
             Deelnemer selectedItem = (Deelnemer) jList1.getSelectedValue();
 
             int huidigeRonde = (int) jComboBox1.getSelectedItem();
-            int huidigeTafel = (int) jComboBox2.getSelectedItem();
             int volgendeRonde = huidigeRonde + 1;
             int tafelID = 0;
             boolean lastRound = getRoundLastRound(huidigeRonde);
@@ -582,26 +666,78 @@ public class RoundsForm extends javax.swing.JFrame {
                 ListModel lm = jList1.getModel();
 
                 // Alle spelers hun uitslag updaten
-                try {
-                    for (int i = 0; i < lm.getSize(); i++) {
-                        Deelnemer deelnemer = (Deelnemer) lm.getElementAt(i);
+                if (lastRound == false) {
+                    try {
+                        for (int i = 0; i < lm.getSize(); i++) {
+                            Deelnemer deelnemer = (Deelnemer) lm.getElementAt(i);
 
+                            conn = SimpleDataSourceV2.getConnection();
+
+                            String query = "UPDATE RoundRegistration SET Uitslag = ? WHERE DeelnemerID = ?";
+                            PreparedStatement preparedStmt = conn.prepareStatement(query);
+
+                            if (deelnemer.DeelnemerID == selectedItem.DeelnemerID) {
+                                preparedStmt.setInt(1, 1);
+                                setGewonnenVerloren(deelnemer.DeelnemerID, true);
+                            } else {
+                                preparedStmt.setInt(1, 0);
+                                setGewonnenVerloren(deelnemer.DeelnemerID, false);
+                            }
+                            preparedStmt.setInt(2, deelnemer.DeelnemerID);
+                            preparedStmt.executeUpdate();
+                        }
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
+                } else {
+                    // Ik weet dat dit zielige code is
+                    int uitslag = 0;
+                    Map<Integer, Integer> winners = getChosenWinners(huidigeRonde);
+                    if (winners.get(1) == 0){
+                        uitslag = 1;
+                    } else if (winners.get(2) == 0) {
+                        uitslag = 2;
+                    } else if (winners.get(3) == 0) {
+                        uitslag = 3;
+                    }
+                    
+                    try {
                         conn = SimpleDataSourceV2.getConnection();
 
-                        Statement stat = conn.createStatement();
                         String query = "UPDATE RoundRegistration SET Uitslag = ? WHERE DeelnemerID = ?";
                         PreparedStatement preparedStmt = conn.prepareStatement(query);
 
-                        if (deelnemer.DeelnemerID == selectedItem.DeelnemerID) {
-                            preparedStmt.setInt(1, 1);
-                        } else {
-                            preparedStmt.setInt(1, 0);
-                        }
-                        preparedStmt.setInt(2, deelnemer.DeelnemerID);
+                        preparedStmt.setInt(1, uitslag);
+                        preparedStmt.setInt(2, selectedItem.DeelnemerID);
                         preparedStmt.executeUpdate();
+                        
+                        setGewonnenVerloren(selectedItem.DeelnemerID, true);
+                        
+                        if (uitslag == 3) {
+                            for (int i = 0; i < lm.getSize(); i++) {
+                                Deelnemer deelnemer = (Deelnemer) lm.getElementAt(i);
+
+                                conn = SimpleDataSourceV2.getConnection();
+
+                                Statement stat2 = conn.createStatement();
+                                String query2 = "UPDATE RoundRegistration SET Uitslag = ? WHERE DeelnemerID = ?";
+                                PreparedStatement preparedStmt2 = conn.prepareStatement(query2);
+
+                                if (deelnemer.DeelnemerID == selectedItem.DeelnemerID) {
+                                    preparedStmt2.setInt(1, 3);
+                                } else {
+                                    preparedStmt2.setInt(1, 0);
+                                    setGewonnenVerloren(deelnemer.DeelnemerID, false);
+                                }
+                                preparedStmt2.setInt(2, deelnemer.DeelnemerID);
+                                preparedStmt2.executeUpdate();
+                            }
+                        }
+                        
+                    } catch (Exception ex) {
+                        System.out.println(ex);
                     }
-                } catch (Exception ex) {
-                    System.out.println(ex);
+                    
                 }
 
                 // Als het de laatste ronde is, hoef je geen nieuwe ronde meer aan te maken!
