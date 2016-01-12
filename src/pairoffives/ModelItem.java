@@ -28,6 +28,11 @@ public class ModelItem {
     public int toernooi_id;
     public int speler_id;
     public double betaling;
+    public int maxDeelnemers;
+    public int minRatingpunten;
+    public int ratingpunten;
+    
+    
     
     
     
