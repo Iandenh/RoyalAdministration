@@ -326,6 +326,8 @@ public class toernooiForm extends javax.swing.JFrame {
                 datumField.setText(datum);
                 minField.setText(minDeelnemers);
                 maxField.setText(maxDeelnemers);
+                minField.setEnabled(false);
+                maxField.setEnabled(false);
             }
 
         } catch (Exception ex) {
@@ -371,8 +373,8 @@ public class toernooiForm extends javax.swing.JFrame {
     }//GEN-LAST:event_toernooiTableMousePressed
     private void toernooiOpslaan() {
 
-            if(Integer.parseInt(maxField.getText()) % 10 != 0){
-                JOptionPane.showMessageDialog(null, "Max deelnemer moet een veelvoud zijn van 10");
+            if(Integer.parseInt(maxField.getText()) % 10 < 5){
+                JOptionPane.showMessageDialog(null, "Er kunnen geen tafels met minder dan 5 man zijn");
                 return;
             }
         try {
@@ -425,6 +427,14 @@ public class toernooiForm extends javax.swing.JFrame {
            PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
             stat.setInt(1, toernooiId);
             stat.setInt(2, perTafel);
+            int effectedRecords = stat.executeUpdate();
+            stat.close();
+       }
+       int rest = maxdeelnemers % perTafel;
+       if(rest >= 5){
+            PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
+            stat.setInt(1, toernooiId);
+            stat.setInt(2, rest);
             int effectedRecords = stat.executeUpdate();
             stat.close();
        }
