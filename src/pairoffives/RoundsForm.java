@@ -27,14 +27,22 @@ public class RoundsForm extends javax.swing.JFrame {
 
     Connection conn = null;
     private int ToernooiID = 0;
-    private final List<RoundRegistrationObject> roundRegistrationObjectsList = new ArrayList<RoundRegistrationObject>() {};
-    private final List<Integer> roundsList = new ArrayList<Integer>() {};
-    private final Map<Integer, List<Integer>> tablesPerRoundMap = new HashMap<Integer, List<Integer>>() {};
-    private final Map<Integer, Deelnemer> deelnemersList = new HashMap<Integer, Deelnemer>() {};
-    private final Map<String, List<Integer>> tafelDeelnemersList = new HashMap<String, List<Integer>>() {};
+    private final List<RoundRegistrationObject> roundRegistrationObjectsList = new ArrayList<RoundRegistrationObject>() {
+    };
+    private final List<Integer> roundsList = new ArrayList<Integer>() {
+    };
+    private final Map<Integer, List<Integer>> tablesPerRoundMap = new HashMap<Integer, List<Integer>>() {
+    };
+    private final Map<Integer, Deelnemer> deelnemersList = new HashMap<Integer, Deelnemer>() {
+    };
+    private final Map<String, List<Integer>> tafelDeelnemersList = new HashMap<String, List<Integer>>() {
+    };
 
+    // Hi nakijker, meeste is gecomment, als het niet gecomment is dan was er geen tijd meer voor
+    // Groetjes Thomas
+    
     /**
-     * Creates new form RoundsForm
+     * Blub
      */
     public RoundsForm() {
         initComponents();
@@ -49,16 +57,16 @@ public class RoundsForm extends javax.swing.JFrame {
         this.ToernooiID = toernooiID;
 
         // Data ophalen en in de properties stoppen
-        GetData(toernooiID);
+        getData(toernooiID);
 
         // Vanuit de properties, de lijsten vullen.
-        FillFields();
+        fillFields();
 
         // Sluit zooi
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
 
-    private boolean GetData(int toernooiID) {
+    private boolean getData(int toernooiID) {
         boolean value = false; //This boolean indicates if the process succeeded or failed.
 
         // ++ RoundRegistrationObject ++
@@ -95,7 +103,7 @@ public class RoundsForm extends javax.swing.JFrame {
             }
         }
 
-         // -- Rondes --
+        // -- Rondes --
         // ++ Tafels ++
         // Vullen van de tablesPerRoundMap property om later te kunnen gebruiken bij het selecteren.
         for (int ronde : roundsList) {
@@ -225,7 +233,71 @@ public class RoundsForm extends javax.swing.JFrame {
         return value;
     }
 
-    private void FillFields() {
+    private List<Integer> getAvailableTable(int ronde) {
+        // Beschikbare tafel halen
+        List<Integer> value = new ArrayList<Integer>() {};
+        Map<Integer, Integer> tafels = new HashMap<Integer, Integer>() {};
+        Map<Integer, Integer> huidigeTafels = new HashMap<Integer, Integer>() {};
+                
+        try {
+
+            conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery("SELECT * FROM Tafel WHERE Toernooi_ID = " + ToernooiID);
+
+            while (result.next()) {
+                int ID = result.getInt("ID");
+                int maxAantalSpelers = result.getInt("Max_aantal_spelers");
+
+                if (tafels.get(ID) == null) {
+                    tafels.put(ID, maxAantalSpelers);
+                }
+            }
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        
+        try {
+
+            conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery("SELECT TafelID, COUNT(TafelID) AS Aantal FROM RoundRegistration WHERE ToernooiID = " + ToernooiID + " GROUP BY TafelID");
+
+            while (result.next()) {
+                int ID = result.getInt("tafelID");
+                int aantalSpelers = result.getInt("Aantal");
+                if (huidigeTafels.get(ID) == null) {
+                    huidigeTafels.put(ID, aantalSpelers);
+                }
+            }
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        
+        for (Map.Entry<Integer, Integer> entry : huidigeTafels.entrySet())
+        {
+            if (tafels.get(entry.getKey()) != null) {
+                if (entry.getValue() >= tafels.get(entry.getKey())) {
+                    tafels.remove(entry.getKey());
+                }
+            }
+        }
+        
+        for (Map.Entry<Integer, Integer> entry : tafels.entrySet())
+        {
+            value.add((int) entry.getKey());
+        }
+        
+        Collections.sort(value);
+        
+        return value;
+    }
+
+    private void fillFields() {
         // ++ Rondes ++
         // Vullen van de jComboBox1 (rondes)
         DefaultComboBoxModel rondes = new DefaultComboBoxModel();
@@ -235,7 +307,7 @@ public class RoundsForm extends javax.swing.JFrame {
         }
 
         jComboBox1.setModel(rondes);
-         // -- Rondes --
+        // -- Rondes --
 
         if (jComboBox1.getItemCount() == 0) {
             JOptionPane.showMessageDialog(null, "Er zijn geen ronden beschikbaar voor dit toernooi!");
@@ -279,23 +351,23 @@ public class RoundsForm extends javax.swing.JFrame {
         jList1.setModel(spelers);
         // -- Spelers zetten --
     }
-    
-    private void SetButtonText(){
+
+    private void setButtonText() {
         // Button text zetten
         int huidigeRonde = (int) jComboBox1.getSelectedItem();
-        boolean lastRound = GetRoundLastRound(huidigeRonde);
-        if (lastRound){
+        boolean lastRound = getRoundLastRound(huidigeRonde);
+        if (lastRound) {
             jButton1.setText("Promoveren tot winnaar van het toernooi");
         } else {
             jButton1.setText("Promoveren tot ronde " + (huidigeRonde + 1));
         }
 
     }
-    
-    private boolean GetRoundLastRound(int huidigeRonde) {
+
+    private boolean getRoundLastRound(int huidigeRonde) {
         // Is huidig geselecteerde ronde de laatste ronde?
         boolean value = false;
-        
+
         try {
             conn = SimpleDataSourceV2.getConnection();
 
@@ -307,8 +379,8 @@ public class RoundsForm extends javax.swing.JFrame {
             }
         } catch (Exception ex) {
             System.out.println(ex);
-        }                
-        
+        }
+
         return value;
     }
 
@@ -349,8 +421,8 @@ public class RoundsForm extends javax.swing.JFrame {
             this.DeelnemerID = deelnemerID;
             this.Uitslag = uitslag;
         }
-    }  
-    
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -464,12 +536,12 @@ public class RoundsForm extends javax.swing.JFrame {
         }
 
         jList1.setModel(spelers);
-        
-        SetButtonText();
+
+        setButtonText();
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
-        SetButtonText();
+        setButtonText();
 
         // Zet speler tabel
         int ronde = (int) jComboBox1.getSelectedItem();
@@ -497,67 +569,72 @@ public class RoundsForm extends javax.swing.JFrame {
             int huidigeTafel = (int) jComboBox2.getSelectedItem();
             int volgendeRonde = huidigeRonde + 1;
             int tafelID = 0;
-            boolean lastRound = GetRoundLastRound(huidigeRonde);
+            boolean lastRound = getRoundLastRound(huidigeRonde);
             int reply;
-            
-            if (lastRound){
+
+            if (lastRound) {
                 reply = JOptionPane.showConfirmDialog(null, "Weet je zeker dat je de speler '" + selectedItem.Naam + "' tot winnaar van het toernooi wilt promoveren?", "Weet je het zeker", JOptionPane.YES_NO_OPTION);
             } else {
                 reply = JOptionPane.showConfirmDialog(null, "Weet je zeker dat je de speler '" + selectedItem.Naam + "' wilt promoveren tot de volgende ronde?", "Weet je het zeker", JOptionPane.YES_NO_OPTION);
             }
-            
-            if (reply == JOptionPane.YES_OPTION) {             
-                    ListModel lm = jList1.getModel();
 
-                    // Alle spelers hun uitslag updaten
-                    try {
-                        for (int i = 0; i < lm.getSize(); i++) {
-                            Deelnemer deelnemer = (Deelnemer) lm.getElementAt(i);
+            if (reply == JOptionPane.YES_OPTION) {
+                ListModel lm = jList1.getModel();
 
-                            conn = SimpleDataSourceV2.getConnection();
+                // Alle spelers hun uitslag updaten
+                try {
+                    for (int i = 0; i < lm.getSize(); i++) {
+                        Deelnemer deelnemer = (Deelnemer) lm.getElementAt(i);
 
-                            Statement stat = conn.createStatement();
-                            String query = "UPDATE RoundRegistration SET Uitslag = ? WHERE DeelnemerID = ?";
-                            PreparedStatement preparedStmt = conn.prepareStatement(query);
+                        conn = SimpleDataSourceV2.getConnection();
 
-                            if (deelnemer.DeelnemerID == selectedItem.DeelnemerID) {
-                                preparedStmt.setInt(1, 1);
-                            } else {
-                                preparedStmt.setInt(1, 0);
-                            }
-                            preparedStmt.setInt(2, deelnemer.DeelnemerID);
-                            preparedStmt.executeUpdate();
+                        Statement stat = conn.createStatement();
+                        String query = "UPDATE RoundRegistration SET Uitslag = ? WHERE DeelnemerID = ?";
+                        PreparedStatement preparedStmt = conn.prepareStatement(query);
+
+                        if (deelnemer.DeelnemerID == selectedItem.DeelnemerID) {
+                            preparedStmt.setInt(1, 1);
+                        } else {
+                            preparedStmt.setInt(1, 0);
                         }
-                    } catch (Exception ex){
+                        preparedStmt.setInt(2, deelnemer.DeelnemerID);
+                        preparedStmt.executeUpdate();
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+
+                // Als het de laatste ronde is, hoef je geen nieuwe ronde meer aan te maken!
+                if (lastRound == false) {
+                    // Eerstevolgende beschikbare Tafel ID ophalen
+                    try {
+
+                        conn = SimpleDataSourceV2.getConnection();
+
+                        Statement stat = conn.createStatement();
+                        ResultSet result = stat.executeQuery("SELECT T.* FROM TAFEL AS T JOIN RoundRegistration AS RR ON RR.TafelID = T.ID WHERE RR.RONDE = " + volgendeRonde + " AND ToernooiID = " + ToernooiID + " GROUP BY T.ID HAVING COUNT(RR.ID) < T.Max_Aantal_spelers LIMIT 1");
+
+                        if (result.next()) {
+                            int ID = result.getInt("ID");
+                            tafelID = ID;
+                        }
+                    } catch (Exception ex) {
                         System.out.println(ex);
                     }
 
-                    // Als het de laatste ronde is, hoef je geen nieuwe ronde meer aan te maken!
-                    if (lastRound == false) {
-                        // Eerstevolgende beschikbare Tafel ID ophalen
-                        try {
-
-                            conn = SimpleDataSourceV2.getConnection();
-
-                            Statement stat = conn.createStatement();
-                            ResultSet result = stat.executeQuery("SELECT T.* FROM TAFEL AS T JOIN RoundRegistration AS RR ON RR.TafelID = T.ID WHERE RR.RONDE = " + volgendeRonde + " AND ToernooiID = " + ToernooiID + " GROUP BY T.ID HAVING COUNT(RR.ID) < T.Max_Aantal_spelers LIMIT 1");
-
-                            if (result.next()) {
-                                int ID = result.getInt("ID");
-                                tafelID = ID;
-                            }
-                        } catch (Exception ex) {
-                            System.out.println(ex);
-                        }
-
-                        // Geselecteerde speler aan een nieuwe tafel toevoegen                  
-                        try {
+                    // Geselecteerde speler aan een nieuwe tafel toevoegen                  
+                    try {
                         String prepSqlStatement = "INSERT INTO RoundRegistration (Ronde, ToernooiID, TafelID, DeelnemerID) VALUES (?, ?, ?, ?)";
                         PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
                         stat.setInt(1, volgendeRonde);
                         stat.setInt(2, ToernooiID);
                         if (tafelID == 0) {
-                            stat.setInt(3, huidigeTafel + 1);
+                            List<Integer> tafels = getAvailableTable(volgendeRonde);
+                            if (tafels.size() >= 1){
+                                stat.setInt(3, tafels.get(0));
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Er zijn geen beschikbare tafels meer!");
+                            }
                         } else {
                             stat.setInt(3, tafelID);
                         }
@@ -569,9 +646,9 @@ public class RoundsForm extends javax.swing.JFrame {
                         System.out.println(ex);
                     }
                 }
-                    
-                    GetData(ToernooiID);
-                    FillFields();
+
+                getData(ToernooiID);
+                fillFields();
             }
 
         } else {
