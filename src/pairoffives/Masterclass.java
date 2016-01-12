@@ -191,6 +191,7 @@ public class Masterclass extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Speler " + speler + " heeft zich succesvol ingeschreven voor de masterclass " + masterclass);
             stat.setDouble(3, (betaling));
             int effectedRecords = stat.executeUpdate();
+            
             stat.close();
 
             System.out.println(object.size());

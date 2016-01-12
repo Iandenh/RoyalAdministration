@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
@@ -115,6 +116,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
     }
 
     public int id;
+
     public void checkTafel() {
 
         ArrayList<String> obj3 = new ArrayList<String>();
@@ -148,6 +150,158 @@ public class inschrijvenForm extends javax.swing.JFrame {
             stat1.setInt(1, 1);
             stat1.setInt(2, combobox2.id);
             stat1.setInt(3, id);
+            stat1.setInt(4, Vullen_Deelnemers());
+
+            stat1.executeUpdate();
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+
+    }
+
+    public void checkTafel2() {
+
+        ArrayList<String> obj3 = new ArrayList<String>();
+
+        try {
+            int maxdeelnemerpertafel = 0;
+
+            int deelnemers = 0;
+            int tafelID = 0;
+            int test = 0;
+            int test2 = 0;
+
+            ModelItem combobox2 = (ModelItem) jComboBox2.getSelectedItem();
+            ModelItem combobox1 = (ModelItem) jComboBox1.getSelectedItem();
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+
+            ResultSet result2 = stat.executeQuery("SELECT id FROM tafel where toernooi_id = " + combobox2.id + " ORDER BY id limit 1;");
+
+            while (result2.next()) {
+
+                tafelID = result2.getInt("id");
+                System.out.println(tafelID + "TafelID");
+
+            }
+
+            ResultSet result = stat.executeQuery("SELECT max_aantal_spelers from tafel T where T.toernooi_id = " + combobox2.id + " limit 1"); //Max aantal deelnemers per tafel gesorteerd op toernooiID
+
+            while (result.next()) {
+
+                maxdeelnemerpertafel = result.getInt("max_aantal_spelers");
+                System.out.println(maxdeelnemerpertafel + "TafelID");
+
+            }
+
+            ResultSet result1 = stat.executeQuery("SELECT count(DeelnemerID) as deelnemers from roundregistration where TafelID = " + tafelID + " and toernooiID = " + combobox2.id);
+
+            while (result1.next()) {
+
+                deelnemers = result1.getInt("deelnemers");
+                System.out.println(deelnemers + "TafelID");
+
+            }
+
+            //ResultSet result7 = stat.executeQuery("SELECT tafel.id, count(RR.DeelnemerID) as test FROM tafel join roundregistration RR on RR.TafelID = tafel.id where RR.ToernooiID = "+combobox2.id+" and TafelID = 1");
+            // while(result7.next()){
+            //test = result.getInt("test");
+            //test2 = result.getInt("id");
+            //}
+            if (deelnemers >= maxdeelnemerpertafel) {
+
+                tafelID += 1;
+                System.out.println(tafelID + "TafelInew");
+
+            }
+
+            String prepSqlStatement = "INSERT INTO RoundRegistration (Ronde, ToernooiID, TafelID, DeelnemerID) VALUES (?, ?, ?, ?)";
+
+            PreparedStatement stat1 = conn.prepareStatement(prepSqlStatement);
+
+            stat1.setInt(1, 1);
+            stat1.setInt(2, combobox2.id);
+            stat1.setInt(3, tafelID);
+            stat1.setInt(4, Vullen_Deelnemers());
+
+            stat1.executeUpdate();
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+
+    }
+
+    public void checkTafel3() {
+
+        ArrayList<String> volletafels = new ArrayList<String>();
+        ArrayList<String> tafelIDD = new ArrayList<String>();
+         ArrayList<String> legetafels = new ArrayList<String>();
+        
+
+        int deelnemers = 0;
+        int tafelID = 0;
+        int tafelIDLast = 0;
+        int volleTafels = 0;
+        int legetafel = 0;
+
+        try {
+
+            ModelItem combobox2 = (ModelItem) jComboBox2.getSelectedItem();
+            ModelItem combobox1 = (ModelItem) jComboBox1.getSelectedItem();
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+
+            
+             ResultSet result4 = stat.executeQuery("SELECT id from tafel");
+
+            while (result4.next()) {
+
+                tafelIDD.add(Integer.toString(result4.getInt("id")));
+                
+               
+            }
+
+            ResultSet result2 = stat.executeQuery("SELECT RR.TafelID as tafelID, count(RR.DeelnemerID) as deelnemers FROM roundregistration RR\n"
+                    + "inner join tafel T on T.id = RR.TafelID\n"
+                    + "where T.toernooi_id = 4\n"
+                    + "group by t.id\n"
+                    + "having count(RR.DeelnemerID) >= 10");
+
+            while (result2.next()) {
+
+                volletafels.add(Integer.toString(result2.getInt("tafelID")));
+                
+            }
+
+                for (int i = 0; i < volletafels.size(); i++) {
+                    
+                    while(Integer.parseInt(volletafels.get(i)) != Integer.parseInt(tafelIDD.get(i))){
+                        
+                        legetafels.add(tafelIDD.get(i));
+                        
+                }
+                
+            }
+                
+                
+            
+            
+
+            String prepSqlStatement = "INSERT INTO RoundRegistration (Ronde, ToernooiID, TafelID, DeelnemerID) VALUES (?, ?, ?, ?)";
+
+            PreparedStatement stat1 = conn.prepareStatement(prepSqlStatement);
+
+            stat1.setInt(1, 1);
+            stat1.setInt(2, combobox2.id);
+            stat1.setInt(3, legetafel);
             stat1.setInt(4, Vullen_Deelnemers());
 
             stat1.executeUpdate();
@@ -196,19 +350,19 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
             }
 
-            ResultSet result1 = stat.executeQuery("SELECT SUM(Max_aantal_spelers) as Max_aantal_spelers FROM TAFEL WHERE Toernooi_ID = " + combobox2.id);
+            ResultSet result4 = stat.executeQuery("SELECT SUM(Max_aantal_spelers) as Max_aantal_spelers FROM TAFEL WHERE Toernooi_ID = " + combobox2.id);
 
-            while (result1.next()) {
+            while (result4.next()) {
 
-                maxSpelers = result1.getInt("Max_aantal_spelers");
+                maxSpelers = result4.getInt("Max_aantal_spelers");
 
             }
 
-            ResultSet result2 = stat.executeQuery("SELECT COUNT(*) as aantal FROM RoundRegistration WHERE ToernooiID = " + combobox2.id);
+            ResultSet result5 = stat.executeQuery("SELECT COUNT(*) as aantal FROM RoundRegistration WHERE ToernooiID = " + combobox2.id);
 
-            while (result2.next()) {
+            while (result5.next()) {
 
-                ingeschrevenSpelers = result2.getInt("aantal");
+                ingeschrevenSpelers = result5.getInt("aantal");
 
             }
 
@@ -218,11 +372,11 @@ public class inschrijvenForm extends javax.swing.JFrame {
                 return;
             }
 
-            ResultSet result3 = stat.executeQuery("select speler_id from deelnemer where toernooi_id = " + combobox2.id);
+            ResultSet result6 = stat.executeQuery("select speler_id from deelnemer where toernooi_id = " + combobox2.id);
 
-            while (result3.next()) {
+            while (result6.next()) {
 
-                obj.add(Integer.toString(result3.getInt("speler_id")));
+                obj.add(Integer.toString(result6.getInt("speler_id")));
 
             }
 
@@ -236,8 +390,6 @@ public class inschrijvenForm extends javax.swing.JFrame {
                     System.out.println(obj.get(i));
                     JOptionPane.showMessageDialog(null, "Speler " + combobox1 + " heeft zich al ingeschreven voor het toernooi " + combobox2.naam);
 
-                    stat.close();
-
                     return;
                 }
 
@@ -246,9 +398,6 @@ public class inschrijvenForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Speler " + combobox1 + " heeft zich succesvol ingeschreven voor het toernooi " + combobox2);
             stat.setDouble(3, (betaling));
             int effectedRecords = stat.executeUpdate();
-            stat.close();
-
-            checkTafel();
 
             System.out.println(obj.size());
 
@@ -422,6 +571,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Speler_Inschrijven();
+        checkTafel3();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed

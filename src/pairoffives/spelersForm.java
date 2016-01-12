@@ -204,34 +204,6 @@ public class spelersForm extends javax.swing.JFrame {
 
     }
 
-    public void speler_wijzigen() {
-
-        try {
-
-            Connection conn = SimpleDataSourceV2.getConnection();
-            PreparedStatement result = conn.prepareStatement("update speler SET naam=?, adres=?, postcode=?, woonplaats=?, telnr=?, email=? where id =" + jLabel8.getText());
-
-            result.setString(1, jTextField1.getText());
-            result.setString(2, jTextField2.getText());
-            result.setString(3, jTextField3.getText());
-            result.setString(4, jTextField4.getText());
-            result.setString(5, jTextField5.getText());
-            result.setString(6, jTextField6.getText());
-
-            int res = result.executeUpdate();
-
-            spelers_overzicht();
-
-            JOptionPane.showMessageDialog(null, "Speler gewijzigd");
-
-            result.close();
-
-        } catch (Exception ex) {
-
-            System.out.println(ex);
-        }
-    }
-
     public spelersForm() {
         initComponents();
     }
@@ -369,10 +341,6 @@ public class spelersForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        spelerOpslaanWijzigen();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         speler_verwijderen();
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -414,6 +382,10 @@ public class spelersForm extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        spelerOpslaanWijzigen();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
