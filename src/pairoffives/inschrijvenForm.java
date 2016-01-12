@@ -239,10 +239,9 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
     public void checkTafel3() {
 
-        ArrayList<String> volletafels = new ArrayList<String>();
-        ArrayList<String> tafelIDD = new ArrayList<String>();
-         ArrayList<String> legetafels = new ArrayList<String>();
-        
+        ArrayList<Integer> volletafels = new ArrayList<Integer>();
+        ArrayList<Integer> tafelIDD = new ArrayList<Integer>();
+        ArrayList<Integer> legetafels = new ArrayList<Integer>();
 
         int deelnemers = 0;
         int tafelID = 0;
@@ -259,41 +258,37 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
             Statement stat = conn.createStatement();
 
-            
-             ResultSet result4 = stat.executeQuery("SELECT id from tafel");
+            ResultSet result4 = stat.executeQuery("SELECT id from tafel");
 
             while (result4.next()) {
 
-                tafelIDD.add(Integer.toString(result4.getInt("id")));
-                
-               
+                tafelIDD.add(result4.getInt("id"));
+
             }
 
             ResultSet result2 = stat.executeQuery("SELECT RR.TafelID as tafelID, count(RR.DeelnemerID) as deelnemers FROM roundregistration RR\n"
                     + "inner join tafel T on T.id = RR.TafelID\n"
-                    + "where T.toernooi_id = 4\n"
+                    + "where T.toernooi_id = " + combobox2.id + "\n"
                     + "group by t.id\n"
                     + "having count(RR.DeelnemerID) >= 10");
 
             while (result2.next()) {
 
-                volletafels.add(Integer.toString(result2.getInt("tafelID")));
-                
+                volletafels.add((result2.getInt("tafelID")));
+                System.out.println(volletafels.get(1));
+
             }
 
-                for (int i = 0; i < volletafels.size(); i++) {
-                    
-                    while(Integer.parseInt(volletafels.get(i)) != Integer.parseInt(tafelIDD.get(i))){
-                        
-                        legetafels.add(tafelIDD.get(i));
-                        
+            for (int i = 0; i < volletafels.size(); i++) {
+
+                while (volletafels.get(i) != tafelIDD.get(i)) {
+
+                    legetafels.add(i);
+                    System.out.println("contains" + i);
+
                 }
-                
+
             }
-                
-                
-            
-            
 
             String prepSqlStatement = "INSERT INTO RoundRegistration (Ronde, ToernooiID, TafelID, DeelnemerID) VALUES (?, ?, ?, ?)";
 
@@ -301,7 +296,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
             stat1.setInt(1, 1);
             stat1.setInt(2, combobox2.id);
-            stat1.setInt(3, legetafel);
+            stat1.setInt(3, legetafels.get(1));
             stat1.setInt(4, Vullen_Deelnemers());
 
             stat1.executeUpdate();
@@ -607,16 +602,21 @@ public class inschrijvenForm extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(inschrijvenForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(inschrijvenForm.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(inschrijvenForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(inschrijvenForm.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(inschrijvenForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(inschrijvenForm.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(inschrijvenForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(inschrijvenForm.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
