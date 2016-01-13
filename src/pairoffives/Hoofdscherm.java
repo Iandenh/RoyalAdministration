@@ -170,7 +170,9 @@ public class Hoofdscherm extends javax.swing.JFrame {
         master.setMasterclass();
         master.masterclassOverzicht();
         master.setSpeler();
+        master.Vullen_Leraar();
         master.setVisible(true);
+        master.setTitle("Masterclass");
         
         
         
