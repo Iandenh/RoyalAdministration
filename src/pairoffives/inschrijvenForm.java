@@ -212,6 +212,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
             //test = result.getInt("test");
             //test2 = result.getInt("id");
             //}
+            
             if (deelnemers >= maxdeelnemerpertafel) {
 
                 tafelID += 1;
@@ -237,7 +238,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
     }
 
-    public void checkTafel3() {
+    public void checkTafel3(RoundsForm roundsform) {
 
         ArrayList<Integer> volletafels = new ArrayList<Integer>();
         ArrayList<Integer> tafelIDD = new ArrayList<Integer>();
@@ -293,10 +294,14 @@ public class inschrijvenForm extends javax.swing.JFrame {
             String prepSqlStatement = "INSERT INTO RoundRegistration (Ronde, ToernooiID, TafelID, DeelnemerID) VALUES (?, ?, ?, ?)";
 
             PreparedStatement stat1 = conn.prepareStatement(prepSqlStatement);
-
+            
+            
+            
+            
+            
             stat1.setInt(1, 1);
             stat1.setInt(2, combobox2.id);
-            stat1.setInt(3, legetafels.get(1));
+            //stat1.setInt(3, );
             stat1.setInt(4, Vullen_Deelnemers());
 
             stat1.executeUpdate();
@@ -306,6 +311,36 @@ public class inschrijvenForm extends javax.swing.JFrame {
             System.out.println(ex);
         }
 
+    }
+    
+    public int getStatus(){
+        
+        int result2 = 1;
+        
+        try {
+
+            ModelItem combobox2 = (ModelItem) jComboBox2.getSelectedItem();
+            ModelItem combobox1 = (ModelItem) jComboBox1.getSelectedItem();
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+
+            ResultSet result = stat.executeQuery("SELECT status FROM toernooi WHERE id = "+combobox2.id );
+
+            if (result.next()) {
+                
+                result2 = result.getInt("status");
+            
+            }
+
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+        
+        return result2;
     }
 
     public void Speler_Inschrijven() {
@@ -330,8 +365,15 @@ public class inschrijvenForm extends javax.swing.JFrame {
             stat.setInt(1, combobox1.id);
             stat.setInt(2, combobox2.id);
 
+            
+            if(getStatus() != 0){
+                
+                 JOptionPane.showMessageDialog(null, "Toernooi is al begonnen");
+                 return;
+            }
+            
             //Speler kan zich alleen inschrijven als het volledige inleg bedrag is overgemaakt
-            if (betaling > combobox2.kosten) {
+            else if (betaling > combobox2.kosten) {
 
                 JOptionPane.showMessageDialog(null, "Je kan niet meer inleggeld vragen dan het inleg bedrag voor het toernooi " + combobox2.naam);
 
@@ -565,8 +607,11 @@ public class inschrijvenForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
         Speler_Inschrijven();
-        checkTafel3();
+        
+        
+           
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
