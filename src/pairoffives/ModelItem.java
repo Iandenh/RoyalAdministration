@@ -13,6 +13,7 @@ public class ModelItem {
     
     
     public int id;
+    public int masterclass_id;
     public String naam;
     public String achternaam;
     public String adres;
@@ -28,11 +29,9 @@ public class ModelItem {
     public int toernooi_id;
     public int speler_id;
     public double betaling;
+    public int ratingpunten;
     public int maxDeelnemers;
     public int minRatingpunten;
-    public int ratingpunten;
-    
-    
     
     
     

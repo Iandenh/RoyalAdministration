@@ -174,15 +174,15 @@ public class Hoofdscherm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-        Masterclass masterclass = new Masterclass();
-        masterclass.setSpeler();
-        masterclass.setMasterclass();
-        masterclass.setVisible(true);
-        masterclass.setTitle("Masterclass");
+       
+        masterclassForm master = new masterclassForm();
+        master.setMasterclass();
+        master.masterclassOverzicht();
+        master.setSpeler();
+        master.setVisible(true);
+        
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    
     /**
      * @param args the command line arguments
      */
