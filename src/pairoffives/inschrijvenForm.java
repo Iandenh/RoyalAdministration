@@ -248,7 +248,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
         List<Integer> listOfTables = new ArrayList<Integer>() {};
         Map<Integer, Integer> tafels = new HashMap<Integer, Integer>() {};
         Map<Integer, Integer> huidigeTafels = new HashMap<Integer, Integer>() {};
-                
+
         try {
 
             Connection conn = SimpleDataSourceV2.getConnection();
@@ -262,8 +262,8 @@ public class inschrijvenForm extends javax.swing.JFrame {
         } catch (Exception ex) {
             System.out.println(ex);
         }
-        
-        if (value == 0) {        
+
+        if (value == 0) {
             try {
 
                 Connection conn = SimpleDataSourceV2.getConnection();
@@ -318,16 +318,16 @@ public class inschrijvenForm extends javax.swing.JFrame {
             }
 
             Collections.sort(listOfTables);
-            
+
             if (listOfTables.size() > 0){
                 value = listOfTables.get(0);
             }
         }
-        
+
         return value;
     }
     
-    public void checkTafel3() {
+    public void checkTafel3(RoundsForm roundsform) {
 
         ArrayList<Integer> volletafels = new ArrayList<Integer>();
         ArrayList<Integer> tafelIDD = new ArrayList<Integer>();
@@ -383,9 +383,14 @@ public class inschrijvenForm extends javax.swing.JFrame {
             String prepSqlStatement = "INSERT INTO RoundRegistration (Ronde, ToernooiID, TafelID, DeelnemerID) VALUES (?, ?, ?, ?)";
 
             PreparedStatement stat1 = conn.prepareStatement(prepSqlStatement);
-
+            
+            
+            
+            
+            
             stat1.setInt(1, 1);
             stat1.setInt(2, combobox2.id);
+            //stat1.setInt(3, );
             stat1.setInt(3, getAvailableTable());
             stat1.setInt(4, Vullen_Deelnemers());
 
@@ -396,6 +401,36 @@ public class inschrijvenForm extends javax.swing.JFrame {
             System.out.println(ex);
         }
 
+    }
+    
+    public int getStatus(){
+        
+        int result2 = 1;
+        
+        try {
+
+            ModelItem combobox2 = (ModelItem) jComboBox2.getSelectedItem();
+            ModelItem combobox1 = (ModelItem) jComboBox1.getSelectedItem();
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+
+            ResultSet result = stat.executeQuery("SELECT status FROM toernooi WHERE id = "+combobox2.id );
+
+            if (result.next()) {
+                
+                result2 = result.getInt("status");
+            
+            }
+
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+        
+        return result2;
     }
 
     public void Speler_Inschrijven() {
@@ -420,8 +455,15 @@ public class inschrijvenForm extends javax.swing.JFrame {
             stat.setInt(1, combobox1.id);
             stat.setInt(2, combobox2.id);
 
+            
+            if(getStatus() != 0){
+                
+                 JOptionPane.showMessageDialog(null, "Toernooi is al begonnen");
+                 return;
+            }
+            
             //Speler kan zich alleen inschrijven als het volledige inleg bedrag is overgemaakt
-            if (betaling > combobox2.kosten) {
+            else if (betaling > combobox2.kosten) {
 
                 JOptionPane.showMessageDialog(null, "Je kan niet meer inleggeld vragen dan het inleg bedrag voor het toernooi " + combobox2.naam);
 
@@ -608,7 +650,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -655,8 +697,11 @@ public class inschrijvenForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
         Speler_Inschrijven();
-        checkTafel3();
+        
+        
+           
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
