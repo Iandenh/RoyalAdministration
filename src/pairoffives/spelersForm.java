@@ -81,9 +81,9 @@ public class spelersForm extends javax.swing.JFrame {
                     woonplaats, telnr, email, gewonnen, verloren, rating});
 
             }
+            
             jTable1.setAutoResizeMode(jTable1.AUTO_RESIZE_OFF);
             jTable1.setModel(tablemodel);
-            
             
         } catch (Exception ex) {
 
@@ -93,12 +93,14 @@ public class spelersForm extends javax.swing.JFrame {
 
     }
 
-    public void speler_opslaan() {
+    public void spelerOpslaanWijzigen() {
 
         try {
 
             Connection conn = SimpleDataSourceV2.getConnection();
 
+            if(jLabel8.getText() == ""){
+               
             String prepSqlStatement = "INSERT INTO speler (naam,adres,postcode,woonplaats,telnr,email) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
             stat.setString(1, jTextField1.getText());
@@ -115,7 +117,36 @@ public class spelersForm extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(null, "Speler opgeslagen");
 
+            
             stat.close();
+            
+            }else{
+                
+                try {
+
+            PreparedStatement result = conn.prepareStatement("update speler SET naam=?, adres=?, postcode=?, woonplaats=?, telnr=?, email=? where id =" + jLabel8.getText());
+
+            result.setString(1, jTextField1.getText());
+            result.setString(2, jTextField2.getText());
+            result.setString(3, jTextField3.getText());
+            result.setString(4, jTextField4.getText());
+            result.setString(5, jTextField5.getText());
+            result.setString(6, jTextField6.getText());
+
+            int res = result.executeUpdate();
+
+            spelers_overzicht();
+
+            JOptionPane.showMessageDialog(null, "Speler gewijzigd");
+
+            result.close();
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+                
+            }
         } catch (SQLException e) {
             System.out.println("Fout bij opslaan speler: " + e);
         }
@@ -173,34 +204,6 @@ public class spelersForm extends javax.swing.JFrame {
 
     }
 
-    public void speler_wijzigen() {
-
-        try {
-
-            Connection conn = SimpleDataSourceV2.getConnection();
-            PreparedStatement result = conn.prepareStatement("update speler SET naam=?, adres=?, postcode=?, woonplaats=?, telnr=?, email=? where id =" + jLabel8.getText());
-
-            result.setString(1, jTextField1.getText());
-            result.setString(2, jTextField2.getText());
-            result.setString(3, jTextField3.getText());
-            result.setString(4, jTextField4.getText());
-            result.setString(5, jTextField5.getText());
-            result.setString(6, jTextField6.getText());
-
-            int res = result.executeUpdate();
-
-            spelers_overzicht();
-
-            JOptionPane.showMessageDialog(null, "Speler gewijzigd");
-
-            result.close();
-
-        } catch (Exception ex) {
-
-            System.out.println(ex);
-        }
-    }
-
     public spelersForm() {
         initComponents();
     }
@@ -234,7 +237,6 @@ public class spelersForm extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
 
@@ -280,14 +282,14 @@ public class spelersForm extends javax.swing.JFrame {
         getContentPane().add(jTextField6);
         jTextField6.setBounds(110, 280, 150, 30);
 
-        jButton1.setText("Speler opslaan");
+        jButton1.setText("Speler opslaan/wijzigen");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(30, 340, 120, 23);
+        jButton1.setBounds(100, 340, 170, 23);
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel9.setText("Speler aanmaken");
@@ -329,15 +331,6 @@ public class spelersForm extends javax.swing.JFrame {
         getContentPane().add(jButton2);
         jButton2.setBounds(420, 280, 130, 23);
 
-        jButton3.setText("Speler wijzigen");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton3);
-        jButton3.setBounds(170, 340, 130, 23);
-
         jLabel11.setText("Id:");
         getContentPane().add(jLabel11);
         jLabel11.setBounds(60, 60, 34, 14);
@@ -347,10 +340,6 @@ public class spelersForm extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        speler_opslaan();
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         speler_verwijderen();
@@ -394,9 +383,9 @@ public class spelersForm extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jTable1MouseClicked
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        speler_wijzigen();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        spelerOpslaanWijzigen();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -436,7 +425,6 @@ public class spelersForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
