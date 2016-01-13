@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pairoffives;
 
 import java.sql.Connection;
@@ -14,20 +9,17 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-
 /**
  *
  * @author Tony
  */
 public class spelersForm extends javax.swing.JFrame {
 
-    /**
-     * Creates new form spelersForm
-     */
+    
     DefaultListModel jlistmodel = new DefaultListModel();
     DefaultTableModel tablemodel = new DefaultTableModel();
 
-    public void spelers_overzicht() {
+    public void spelersOverzicht() {
 
         int id;
         String naam;
@@ -81,10 +73,10 @@ public class spelersForm extends javax.swing.JFrame {
                     woonplaats, telnr, email, gewonnen, verloren, rating});
 
             }
-            
+
             jTable1.setAutoResizeMode(jTable1.AUTO_RESIZE_OFF);
             jTable1.setModel(tablemodel);
-            
+
         } catch (Exception ex) {
 
             System.out.println(ex);
@@ -99,60 +91,59 @@ public class spelersForm extends javax.swing.JFrame {
 
             Connection conn = SimpleDataSourceV2.getConnection();
 
-            if(jLabel8.getText() == ""){
-               
-            String prepSqlStatement = "INSERT INTO speler (naam,adres,postcode,woonplaats,telnr,email) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
-            stat.setString(1, jTextField1.getText());
-            stat.setString(2, jTextField2.getText());
-            stat.setString(3, jTextField3.getText());
-            stat.setString(4, jTextField4.getText());
-            stat.setString(5, jTextField5.getText());
-            stat.setString(6, jTextField6.getText());
+            if (jLabel8.getText() == "") {
 
-            int effectedRecords = stat.executeUpdate();
+                String prepSqlStatement = "INSERT INTO speler (naam,adres,postcode,woonplaats,telnr,email) VALUES (?, ?, ?, ?, ?, ?)";
+                PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
+                stat.setString(1, jTextField1.getText());
+                stat.setString(2, jTextField2.getText());
+                stat.setString(3, jTextField3.getText());
+                stat.setString(4, jTextField4.getText());
+                stat.setString(5, jTextField5.getText());
+                stat.setString(6, jTextField6.getText());
 
-            //Table update          
-            spelers_overzicht();
+                int effectedRecords = stat.executeUpdate();
 
-            JOptionPane.showMessageDialog(null, "Speler opgeslagen");
+                //Table update          
+                spelersOverzicht();
 
-            
-            stat.close();
-            
-            }else{
-                
+                JOptionPane.showMessageDialog(null, "Speler opgeslagen");
+
+                stat.close();
+
+            } else {
+
                 try {
 
-            PreparedStatement result = conn.prepareStatement("update speler SET naam=?, adres=?, postcode=?, woonplaats=?, telnr=?, email=? where id =" + jLabel8.getText());
+                    PreparedStatement result = conn.prepareStatement("update speler SET naam=?, adres=?, postcode=?, woonplaats=?, telnr=?, email=? where id =" + jLabel8.getText());
 
-            result.setString(1, jTextField1.getText());
-            result.setString(2, jTextField2.getText());
-            result.setString(3, jTextField3.getText());
-            result.setString(4, jTextField4.getText());
-            result.setString(5, jTextField5.getText());
-            result.setString(6, jTextField6.getText());
+                    result.setString(1, jTextField1.getText());
+                    result.setString(2, jTextField2.getText());
+                    result.setString(3, jTextField3.getText());
+                    result.setString(4, jTextField4.getText());
+                    result.setString(5, jTextField5.getText());
+                    result.setString(6, jTextField6.getText());
 
-            int res = result.executeUpdate();
+                    int res = result.executeUpdate();
 
-            spelers_overzicht();
+                    spelersOverzicht();
 
-            JOptionPane.showMessageDialog(null, "Speler gewijzigd");
+                    JOptionPane.showMessageDialog(null, "Speler gewijzigd");
 
-            result.close();
+                    result.close();
 
-        } catch (Exception ex) {
+                } catch (Exception ex) {
 
-            System.out.println(ex);
-        }
-                
+                    System.out.println(ex);
+                }
+
             }
         } catch (SQLException e) {
             System.out.println("Fout bij opslaan speler: " + e);
         }
     }
 
-    public void speler_verwijderen() {
+    public void spelerVerwijderen() {
 
         try {
 
@@ -165,7 +156,7 @@ public class spelersForm extends javax.swing.JFrame {
             pstm.executeUpdate();
 
             //Refreshing spelers overzicht table
-            spelers_overzicht();
+            spelersOverzicht();
 
             JOptionPane.showMessageDialog(null, "Speler verwijderd");
 
@@ -178,7 +169,7 @@ public class spelersForm extends javax.swing.JFrame {
 
     }
 
-    public void vullen_spelers() {
+    public void vullenSpelers() {
 
         try {
 
@@ -208,11 +199,7 @@ public class spelersForm extends javax.swing.JFrame {
         initComponents();
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
+   
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -342,7 +329,7 @@ public class spelersForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        speler_verwijderen();
+        spelerVerwijderen();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
