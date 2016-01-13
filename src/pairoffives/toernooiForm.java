@@ -5,6 +5,7 @@
  */
 package pairoffives;
 
+import java.awt.FocusTraversalPolicy;
 import java.awt.Point;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -24,13 +28,14 @@ import javax.swing.WindowConstants;
  */
 public class toernooiForm extends javax.swing.JFrame {
 
+    DefaultTableModel tablemodel = new DefaultTableModel();
+    
     /**
      * Creates new form toernooiForm
      */
     public toernooiForm() {
         initComponents();
     }
-    DefaultTableModel tablemodel = new DefaultTableModel();
 
     public void toernooiOverzicht() {
 
@@ -101,12 +106,6 @@ public class toernooiForm extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel9 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        toernooiTable = new javax.swing.JTable(){
-            public boolean isCellEditable(int rowIndex, int colIndex) {
-                return false;   //Disallow the editing of any cell
-            }
-        };
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -120,15 +119,21 @@ public class toernooiForm extends javax.swing.JFrame {
         kostenField = new javax.swing.JTextField();
         datumField = new javax.swing.JTextField();
         minField = new javax.swing.JTextField();
+        maxField = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        maxField = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        toernooiTable = new javax.swing.JTable(){
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                return false;   //Disallow the editing of any cell
+            }
+        };
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1074, 470));
@@ -139,30 +144,6 @@ public class toernooiForm extends javax.swing.JFrame {
         jLabel9.setText("Toernooi overzicht");
         getContentPane().add(jLabel9);
         jLabel9.setBounds(630, 30, 190, 22);
-
-        toernooiTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {},
-                {},
-                {},
-                {}
-            },
-            new String [] {
-
-            }
-        ));
-        toernooiTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                toernooiTableMousePressed(evt);
-            }
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                toernooiTableMouseClicked(evt);
-            }
-        });
-        jScrollPane2.setViewportView(toernooiTable);
-
-        getContentPane().add(jScrollPane2);
-        jScrollPane2.setBounds(460, 80, 561, 257);
 
         jButton2.setText("Toernooi verwijderen");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -179,7 +160,7 @@ public class toernooiForm extends javax.swing.JFrame {
 
         jLabel2.setText("Naam:");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(90, 130, 40, 20);
+        jLabel2.setBounds(80, 130, 50, 20);
 
         jLabel3.setText("Soort:");
         getContentPane().add(jLabel3);
@@ -195,7 +176,7 @@ public class toernooiForm extends javax.swing.JFrame {
 
         jLabel6.setText("Minimaal deelnemers:");
         getContentPane().add(jLabel6);
-        jLabel6.setBounds(20, 290, 130, 20);
+        jLabel6.setBounds(10, 290, 140, 20);
         getContentPane().add(locatieField);
         locatieField.setBounds(150, 80, 150, 25);
         getContentPane().add(naamField);
@@ -221,6 +202,14 @@ public class toernooiForm extends javax.swing.JFrame {
         getContentPane().add(minField);
         minField.setBounds(150, 280, 150, 30);
 
+        maxField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maxFieldActionPerformed(evt);
+            }
+        });
+        getContentPane().add(maxField);
+        maxField.setBounds(150, 320, 150, 30);
+
         jButton1.setText("Toernooi opslaan");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -243,14 +232,6 @@ public class toernooiForm extends javax.swing.JFrame {
         getContentPane().add(jLabel8);
         jLabel8.setBounds(150, 50, 40, 20);
 
-        maxField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                maxFieldActionPerformed(evt);
-            }
-        });
-        getContentPane().add(maxField);
-        maxField.setBounds(150, 320, 150, 30);
-
         jLabel7.setText("Maximaal deelnemers:");
         getContentPane().add(jLabel7);
         jLabel7.setBounds(10, 330, 140, 20);
@@ -272,6 +253,30 @@ public class toernooiForm extends javax.swing.JFrame {
         });
         getContentPane().add(jButton4);
         jButton4.setBounds(630, 350, 160, 32);
+
+        toernooiTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        toernooiTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                toernooiTableMousePressed(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                toernooiTableMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(toernooiTable);
+
+        getContentPane().add(jScrollPane2);
+        jScrollPane2.setBounds(460, 80, 561, 257);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -319,6 +324,16 @@ public class toernooiForm extends javax.swing.JFrame {
                 String minDeelnemers = result.getString("min_deelnemers");
                 String maxDeelnemers = result.getString("max_deelnemers");
 
+                Pattern p = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2})");//format de datum naar dd/MM/yyyy
+                Matcher m = p.matcher(datum);
+                
+                if (m.find()) {
+                    SimpleDateFormat from = new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat to = new SimpleDateFormat("dd/MM/yyyy");
+                    Date date = from.parse(m.group(1));       // 01/02/2014
+                    datum = to.format(date);     // 2014-02-01
+                }
+                
                 locatieField.setText(locatie);
                 naamField.setText(naam);
                 soortField.setText(soorttoernooi);
@@ -371,16 +386,16 @@ public class toernooiForm extends javax.swing.JFrame {
             toernooiSpeler.setTitle((String) toernooiTable.getModel().getValueAt(row, 2));
         }
     }//GEN-LAST:event_toernooiTableMousePressed
+    
     private void toernooiOpslaan() {
-
-            if(Integer.parseInt(maxField.getText()) % 10 < 5){
-                JOptionPane.showMessageDialog(null, "Er kunnen geen tafels met minder dan 5 man zijn");
-                return;
-            }
+        if(!validation()){
+            return;
+        }
+        
         try {
 
             Connection conn = SimpleDataSourceV2.getConnection();
-            
+
             String prepSqlStatement = "INSERT INTO toernooi (locatie, naam,soorttoernooi,kosten,datum,min_deelnemers,max_deelnemers) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stat = conn.prepareStatement(prepSqlStatement, Statement.RETURN_GENERATED_KEYS);
             stat.setString(1, locatieField.getText());
@@ -398,7 +413,7 @@ public class toernooiForm extends javax.swing.JFrame {
             int effectedRecords = stat.executeUpdate();
             int toernooiId = 0;
             ResultSet rs = stat.getGeneratedKeys();
-            if (rs.next()){
+            if (rs.next()) {
                 toernooiId = rs.getInt(1);
             }
             maakTafels(toernooiId, Integer.parseInt(maxField.getText()));
@@ -414,32 +429,32 @@ public class toernooiForm extends javax.swing.JFrame {
 
         }
     }
-    
-    private void maakTafels(int toernooiId, int maxdeelnemers) throws SQLException{ 
-       maakTafels(toernooiId, maxdeelnemers, 10);
+
+    private void maakTafels(int toernooiId, int maxdeelnemers) throws SQLException {
+        maakTafels(toernooiId, maxdeelnemers, 10);
     }
-    
-    private void maakTafels(int toernooiId, int maxdeelnemers, int perTafel) throws SQLException{ 
+
+    private void maakTafels(int toernooiId, int maxdeelnemers, int perTafel) throws SQLException {
         Connection conn = SimpleDataSourceV2.getConnection();
 
         String prepSqlStatement = "INSERT INTO tafel (toernooi_id, max_aantal_spelers) VALUES (?, ?)";
-       for (int i = 0; i < (maxdeelnemers / perTafel); i++){
-           PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
+        for (int i = 0; i < (maxdeelnemers / perTafel); i++) {
+            PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
             stat.setInt(1, toernooiId);
             stat.setInt(2, perTafel);
             int effectedRecords = stat.executeUpdate();
             stat.close();
-       }
-       int rest = maxdeelnemers % perTafel;
-       if(rest >= 5){
+        }
+        int rest = maxdeelnemers % perTafel;
+        if (rest >= 5) {
             PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
             stat.setInt(1, toernooiId);
             stat.setInt(2, rest);
             int effectedRecords = stat.executeUpdate();
             stat.close();
-       }
+        }
     }
-    
+
     private void toernooiVerwijderen() {
 
         try {
@@ -467,7 +482,9 @@ public class toernooiForm extends javax.swing.JFrame {
     }
 
     private void toernooiWijzigen() {
-
+        if(!validation()){
+            return;
+        }
         try {
 
             Connection conn = SimpleDataSourceV2.getConnection();
@@ -531,6 +548,45 @@ public class toernooiForm extends javax.swing.JFrame {
                 new toernooiForm().setVisible(true);
             }
         });
+    }
+    
+    private boolean validation(){
+        
+        if((locatieField.getText().isEmpty())){
+            JOptionPane.showMessageDialog(null, "Locatie mag niet leeg zijn");
+            return false;
+        }
+        
+        if((naamField.getText().isEmpty())){
+            JOptionPane.showMessageDialog(null, "Naam mag niet leeg zijn");
+            return false;
+        }
+        if((soortField.getText().isEmpty())){
+            JOptionPane.showMessageDialog(null, "Soort mag niet leeg zijn");
+            return false;
+        }
+        if(!(kostenField.getText().matches("^\\d+(.\\d+)?$"))){
+            JOptionPane.showMessageDialog(null, "Kosten moet een getal zijn.");
+            return false;
+        }
+        if(!(datumField.getText().matches("^[0-3]?[0-9]/[0-1]?[0-9]/[0-9]{4}$"))){
+            
+            JOptionPane.showMessageDialog(null, "Datum moet in de fomaat dd/mm/YYYY zijn.");
+            return false;
+        }
+        if(!(minField.getText().matches("^\\d+$"))){
+            JOptionPane.showMessageDialog(null, "Minimale bezoekers moet een getal zijn.");
+            return false;
+        }
+        if(!(maxField.getText().matches("^\\d+$"))){
+            JOptionPane.showMessageDialog(null, "Maximale bezoekers moet een getal zijn.");
+            return false;
+        }
+        if (Integer.parseInt(maxField.getText()) % 10 < 5 && Integer.parseInt(maxField.getText()) % 10 != 0) {
+            JOptionPane.showMessageDialog(null, "Er kunnen geen tafels met minder dan 5 man zijn");
+            return false;
+        }
+        return true;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
