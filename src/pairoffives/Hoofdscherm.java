@@ -141,6 +141,7 @@ public class Hoofdscherm extends javax.swing.JFrame {
        
         inschrijven.setSpelers();
         inschrijven.setToernooi();
+       
         
         inschrijven.setVisible(true);
         inschrijven.setTitle("Spelers inschrijven voor een toernooi");
@@ -167,6 +168,7 @@ public class Hoofdscherm extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
        
         masterclassForm master = new masterclassForm();
+        master.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         master.setMasterclass();
         master.masterclassOverzicht();
         master.setSpeler();
