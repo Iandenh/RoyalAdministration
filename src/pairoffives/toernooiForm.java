@@ -594,10 +594,6 @@ public class toernooiForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Maximale bezoekers moet een getal zijn.");
             return false;
         }
-        if (Integer.parseInt(maxField.getText()) % 10 < 5 && Integer.parseInt(maxField.getText()) % 10 != 0) {
-            JOptionPane.showMessageDialog(null, "Er kunnen geen tafels met minder dan 5 man zijn");
-            //return false;
-        }
         return true;
     }
 
