@@ -305,7 +305,9 @@ public class RoundsForm extends javax.swing.JFrame {
         }
     }
     
-    private List<Integer> getAvailableTable(int ronde) {
+    public List<Integer> getAvailableTable(int ronde) {
+        
+
         // Beschikbare tafel halen
         List<Integer> value = new ArrayList<Integer>() {};
         Map<Integer, Integer> tafels = new HashMap<Integer, Integer>() {};
@@ -336,7 +338,7 @@ public class RoundsForm extends javax.swing.JFrame {
             conn = SimpleDataSourceV2.getConnection();
 
             Statement stat = conn.createStatement();
-            ResultSet result = stat.executeQuery("SELECT TafelID, COUNT(TafelID) AS Aantal FROM RoundRegistration WHERE ToernooiID = " + ToernooiID + " GROUP BY TafelID");
+            ResultSet result = stat.executeQuery("SELECT TafelID, COUNT(TafelID) AS Aantal FROM RoundRegistration WHERE ToernooiID = " + ToernooiID + " AND ronde = "+ronde+" GROUP BY TafelID");
 
             while (result.next()) {
                 int ID = result.getInt("tafelID");
@@ -531,7 +533,6 @@ public class RoundsForm extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Rounds");
         setMaximizedBounds(new java.awt.Rectangle(0, 0, 0, 0));
-        setMaximumSize(new java.awt.Dimension(400, 300));
         setMinimumSize(new java.awt.Dimension(400, 300));
         setResizable(false);
         getContentPane().setLayout(null);
@@ -588,7 +589,7 @@ public class RoundsForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(217, 207, 147, 23);
+        jButton1.setBounds(217, 207, 180, 23);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
