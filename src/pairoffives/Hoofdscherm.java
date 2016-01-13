@@ -176,8 +176,9 @@ public class Hoofdscherm extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
        
-        Masterclass master = new Masterclass();
+        masterclassForm master = new masterclassForm();
         master.setMasterclass();
+        master.masterclassOverzicht();
         master.setSpeler();
         master.setVisible(true);
         
