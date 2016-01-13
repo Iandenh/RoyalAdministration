@@ -177,7 +177,7 @@ public class RoundsForm extends javax.swing.JFrame {
         }
 
         // -- Deelnemers per tafel per ronde --
-        // ++ Deelnemers opslaan in lijst ++\    
+        // ++ Deelnemers opslaan in lijst ++    
         Map<Integer, Integer> spelerIDs = new HashMap<Integer, Integer>() {
         };
         try {
@@ -223,7 +223,6 @@ public class RoundsForm extends javax.swing.JFrame {
                 }
 
             } catch (Exception ex) {
-
                 System.out.println(ex);
                 value = false;
             }
@@ -253,37 +252,63 @@ public class RoundsForm extends javax.swing.JFrame {
         return value;
     }
     
+    private boolean getToernooiStatus() {
+        boolean value = false;
+        int status = 0;
+        
+        try {
+
+            conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery("SELECT Status FROM Toernooi WHERE ID = " + ToernooiID);
+
+            if (result.next()) {
+                status = result.getInt("Status");
+            }
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+            value = false;
+
+        }
+        
+        if (status == 2) {
+            // Game is over
+            value = true;
+        }
+        
+        return value;
+    }
+    
     private void setGewonnenVerloren(int deelnemerID, boolean status) {
         int aantal = 0;
         int spelerID = 0;
         // Ophalen info
         try {
+            conn = SimpleDataSourceV2.getConnection();
 
-                conn = SimpleDataSourceV2.getConnection();
+            String queryString;
 
-                String queryString;
-                
-                if (status) { // gewonnen 
-                    queryString = "SELECT S.Verloren AS Aantal, S.ID FROM Speler AS S Join Deelnemer AS D ON D.Speler_ID = S.ID WHERE D.ID = " + deelnemerID;
-                } else { // verloren
-                    queryString = "SELECT S.Gewonnen AS Aantal, S.ID FROM Speler AS S Join Deelnemer AS D ON D.Speler_ID = S.ID WHERE D.ID = " + deelnemerID;
-                }
-                
-                Statement stat = conn.createStatement();
-                ResultSet result = stat.executeQuery(queryString);
+            if (status) { // gewonnen 
+                queryString = "SELECT S.Verloren AS Aantal, S.ID FROM Speler AS S Join Deelnemer AS D ON D.Speler_ID = S.ID WHERE D.ID = " + deelnemerID;
+            } else { // verloren
+                queryString = "SELECT S.Gewonnen AS Aantal, S.ID FROM Speler AS S Join Deelnemer AS D ON D.Speler_ID = S.ID WHERE D.ID = " + deelnemerID;
+            }
 
-                if (result.next()) {
-                    aantal = result.getInt("aantal");
-                    spelerID = result.getInt("ID");
-                }
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery(queryString);
 
-            } catch (Exception ex) {
-
-                System.out.println(ex);
-            }        
+            if (result.next()) {
+                aantal = result.getInt("Aantal");
+                spelerID = result.getInt("ID");
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }        
         
         // Zetten info
-        
         try {
             conn = SimpleDataSourceV2.getConnection();
 
@@ -305,7 +330,7 @@ public class RoundsForm extends javax.swing.JFrame {
         }
     }
     
-    public List<Integer> getAvailableTable(int ronde) {
+    private List<Integer> getAvailableTable(int ronde) {
         
 
         // Beschikbare tafel halen
@@ -338,7 +363,7 @@ public class RoundsForm extends javax.swing.JFrame {
             conn = SimpleDataSourceV2.getConnection();
 
             Statement stat = conn.createStatement();
-            ResultSet result = stat.executeQuery("SELECT TafelID, COUNT(TafelID) AS Aantal FROM RoundRegistration WHERE ToernooiID = " + ToernooiID + " AND ronde = "+ronde+" GROUP BY TafelID");
+            ResultSet result = stat.executeQuery("SELECT TafelID, COUNT(TafelID) AS Aantal FROM RoundRegistration WHERE ToernooiID = " + ToernooiID + " AND ronde = " + ronde + " GROUP BY TafelID");
 
             while (result.next()) {
                 int ID = result.getInt("tafelID");
@@ -395,6 +420,16 @@ public class RoundsForm extends javax.swing.JFrame {
     }
     
     private void fillFields() {
+        int rondeIndex = jComboBox1.getSelectedIndex();
+        int tafelIndex = jComboBox2.getSelectedIndex();
+        
+        if (rondeIndex == -1) {
+            rondeIndex = 0;
+        }
+        if (tafelIndex == -1) {
+            tafelIndex = 0;
+        }
+
         // ++ Rondes ++
         // Vullen van de jComboBox1 (rondes)
         DefaultComboBoxModel rondes = new DefaultComboBoxModel();
@@ -447,12 +482,22 @@ public class RoundsForm extends javax.swing.JFrame {
 
         jList1.setModel(spelers);
         // -- Spelers zetten --
+        
+        if (jComboBox1.getItemCount() > 0) {
+            jComboBox1.setSelectedIndex(rondeIndex);
+        }
+        if (jComboBox2.getItemCount() > 0) {
+            jComboBox2.setSelectedIndex(tafelIndex);
+        }
+        
+        setButtonText();
     }
 
     private void setButtonText() {
         // Button text zetten
         int huidigeRonde = (int) jComboBox1.getSelectedItem();
         boolean lastRound = getRoundLastRound(huidigeRonde);
+                           
         if (lastRound) {
             Map<Integer, Integer> winners = getChosenWinners(huidigeRonde);
             if (winners.get(1) == 0){
@@ -468,7 +513,79 @@ public class RoundsForm extends javax.swing.JFrame {
         } else {
             jButton1.setText("Promoveren tot ronde " + (huidigeRonde + 1));
         }
+        
+        if (getToernooiStatus()) {
+            jButton1.setText("Dit toernooi is al voorbij!");
+            jButton1.setEnabled(false);
+        }
 
+    }
+    
+    private void setToernooiStatus(int status) {
+        try {
+            conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            String query;
+            
+            query = "UPDATE Toernooi SET Status = ? WHERE ID = ?";
+
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+
+            preparedStmt.setInt(1, status);
+            preparedStmt.setInt(2, ToernooiID);
+            preparedStmt.executeUpdate();
+            
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
+
+    private void updatePlayerRating(int deelnemerID) {
+        int spelerID = 0;
+        int gewonnen = 0;
+        int verloren = 0;
+        double score = 0;
+        
+        try {
+            conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery("SELECT Gewonnen, Verloren, ID FROM Speler WHERE ID = (SELECT Speler_ID FROM Deelnemer WHERE ID = " + deelnemerID + ")");
+
+            if (result.next()) {
+                gewonnen = result.getInt("Gewonnen");
+                verloren = result.getInt("Verloren");
+                spelerID = result.getInt("ID");
+            }
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+            
+        score = (gewonnen / (gewonnen + verloren)) * 10;
+        
+        if (score < 1) {
+            score = 1.0;
+        }
+        
+        try {
+            conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            String query;
+            
+            query = "UPDATE Speler SET Rating = ? WHERE ID = ?";
+
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+
+            preparedStmt.setDouble(1, score);
+            preparedStmt.setInt(2, spelerID);
+            preparedStmt.executeUpdate();
+            
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
     }
     
     private class Deelnemer {
@@ -589,7 +706,7 @@ public class RoundsForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(217, 207, 180, 23);
+        jButton1.setBounds(40, 240, 250, 30);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -665,7 +782,10 @@ public class RoundsForm extends javax.swing.JFrame {
 
             if (reply == JOptionPane.YES_OPTION) {
                 ListModel lm = jList1.getModel();
-
+                
+                // Zet het status van het toernooi op gesloten & begonnnen.
+                setToernooiStatus(1);
+                
                 // Alle spelers hun uitslag updaten
                 if (lastRound == false) {
                     try {
@@ -680,9 +800,11 @@ public class RoundsForm extends javax.swing.JFrame {
                             if (deelnemer.DeelnemerID == selectedItem.DeelnemerID) {
                                 preparedStmt.setInt(1, 1);
                                 setGewonnenVerloren(deelnemer.DeelnemerID, true);
+                                updatePlayerRating(deelnemer.DeelnemerID);
                             } else {
                                 preparedStmt.setInt(1, 0);
                                 setGewonnenVerloren(deelnemer.DeelnemerID, false);
+                                updatePlayerRating(deelnemer.DeelnemerID);
                             }
                             preparedStmt.setInt(2, deelnemer.DeelnemerID);
                             preparedStmt.executeUpdate();
@@ -713,8 +835,13 @@ public class RoundsForm extends javax.swing.JFrame {
                         preparedStmt.executeUpdate();
                         
                         setGewonnenVerloren(selectedItem.DeelnemerID, true);
+                        updatePlayerRating(selectedItem.DeelnemerID);
                         
                         if (uitslag == 3) {
+                            
+                            //Zet status van het toernooi op gesloten & beëindigd.
+                            setToernooiStatus(2);
+                            
                             for (int i = 0; i < lm.getSize(); i++) {
                                 Deelnemer deelnemer = (Deelnemer) lm.getElementAt(i);
 
@@ -729,6 +856,7 @@ public class RoundsForm extends javax.swing.JFrame {
                                 } else {
                                     preparedStmt2.setInt(1, 0);
                                     setGewonnenVerloren(deelnemer.DeelnemerID, false);
+                                    updatePlayerRating(deelnemer.DeelnemerID);
                                 }
                                 preparedStmt2.setInt(2, deelnemer.DeelnemerID);
                                 preparedStmt2.executeUpdate();
