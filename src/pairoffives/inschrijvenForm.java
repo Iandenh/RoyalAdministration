@@ -11,7 +11,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
@@ -237,6 +240,93 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
     }
 
+    private int getAvailableTable() {
+        ModelItem combobox2 = (ModelItem) jComboBox2.getSelectedItem();
+
+        // Beschikbare tafel halen
+        int value = 0;
+        List<Integer> listOfTables = new ArrayList<Integer>() {};
+        Map<Integer, Integer> tafels = new HashMap<Integer, Integer>() {};
+        Map<Integer, Integer> huidigeTafels = new HashMap<Integer, Integer>() {};
+                
+        try {
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery("SELECT T.* FROM TAFEL AS T JOIN RoundRegistration AS RR ON RR.TafelID = T.ID WHERE RR.RONDE = 1 AND ToernooiID = " + combobox2.id + " GROUP BY T.ID HAVING COUNT(RR.ID) < T.Max_Aantal_spelers LIMIT 1");
+
+            if (result.next()) {
+                value = result.getInt("ID");
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        
+        if (value == 0) {        
+            try {
+
+                Connection conn = SimpleDataSourceV2.getConnection();
+
+                Statement stat = conn.createStatement();
+                ResultSet result = stat.executeQuery("SELECT * FROM Tafel WHERE Toernooi_ID = " + combobox2.id);
+
+                while (result.next()) {
+                    int ID = result.getInt("ID");
+                    int maxAantalSpelers = result.getInt("Max_aantal_spelers");
+
+                    if (tafels.get(ID) == null) {
+                        tafels.put(ID, maxAantalSpelers);
+                    }
+                }
+
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+
+            try {
+
+                Connection conn = SimpleDataSourceV2.getConnection();
+
+                Statement stat = conn.createStatement();
+                ResultSet result = stat.executeQuery("SELECT TafelID, COUNT(TafelID) AS Aantal FROM RoundRegistration WHERE ToernooiID = " + combobox2.id + " AND ronde = 1 GROUP BY TafelID");
+
+                while (result.next()) {
+                    int ID = result.getInt("tafelID");
+                    int aantalSpelers = result.getInt("Aantal");
+                    if (huidigeTafels.get(ID) == null) {
+                        huidigeTafels.put(ID, aantalSpelers);
+                    }
+                }
+
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+
+            for (Map.Entry<Integer, Integer> entry : huidigeTafels.entrySet())
+            {
+                if (tafels.get(entry.getKey()) != null) {
+                    if (entry.getValue() >= tafels.get(entry.getKey())) {
+                        tafels.remove(entry.getKey());
+                    }
+                }
+            }
+
+            for (Map.Entry<Integer, Integer> entry : tafels.entrySet())
+            {
+                listOfTables.add((int) entry.getKey());
+            }
+
+            Collections.sort(listOfTables);
+            
+            if (listOfTables.size() > 0){
+                value = listOfTables.get(0);
+            }
+        }
+        
+        return value;
+    }
+    
     public void checkTafel3() {
 
         ArrayList<Integer> volletafels = new ArrayList<Integer>();
@@ -296,7 +386,7 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
             stat1.setInt(1, 1);
             stat1.setInt(2, combobox2.id);
-            stat1.setInt(3, legetafels.get(1));
+            stat1.setInt(3, getAvailableTable());
             stat1.setInt(4, Vullen_Deelnemers());
 
             stat1.executeUpdate();
