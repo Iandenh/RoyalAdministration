@@ -3,9 +3,6 @@ package pairoffives;
 
 import javax.swing.ImageIcon;
 
-import java.awt.Toolkit;
-import javax.swing.ImageIcon;
-
 public class Main {
 
     /**
@@ -20,11 +17,6 @@ public class Main {
         hoofdscherm.setIconImage(new ImageIcon(imageUrl).getImage());
         hoofdscherm.setTitle("Full House");
         hoofdscherm.setVisible(true);
-        
-     
-        
-        
-        
     }
     
 }

@@ -253,6 +253,11 @@ public class RoundsForm extends javax.swing.JFrame {
     }
     
     private boolean getToernooiStatus() {
+        // Status van een toernooi ophalen
+        // 0 = Open voor inschrijvingen
+        // 1 = Gesloten & bezig
+        // 2 = Gesloten & winnaar is gekozen
+        
         boolean value = false;
         int status = 0;
         
@@ -282,9 +287,11 @@ public class RoundsForm extends javax.swing.JFrame {
         return value;
     }
     
-    private void setGewonnenVerloren(int deelnemerID, boolean status) {
+    private void setGewonnenVerloren(int deelnemerID, boolean status, int extra) {
+        // Het zetten van gewonnen / verloren van een speler
         int aantal = 0;
         int spelerID = 0;
+        int totaal = extra + 1;
         // Ophalen info
         try {
             conn = SimpleDataSourceV2.getConnection();
@@ -322,7 +329,61 @@ public class RoundsForm extends javax.swing.JFrame {
             }
             PreparedStatement preparedStmt = conn.prepareStatement(query);
 
-            preparedStmt.setInt(1, aantal + 1);
+            preparedStmt.setInt(1, aantal + totaal);
+            preparedStmt.setInt(2, spelerID);
+            preparedStmt.executeUpdate();
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        
+        updatePlayerRating(deelnemerID);
+    }
+    
+    private void giveWinnerMoney(int deelnemerID, double part) {
+        // Geven van prijzen geld
+        double aantal = 0.00;
+        double totalePrijs = 0.00;
+        int spelerID = 0;
+        // Ophalen info
+        
+        try {
+            conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery("SELECT SUM(Kosten) AS TotaleKosten FROM Toernooi AS T JOIN RoundRegistration AS RR ON RR.ToernooiID = T.ID WHERE T.ID = " + ToernooiID + " AND RR.Ronde = 1");
+
+            if (result.next()) {
+                totalePrijs = result.getDouble("TotaleKosten");
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }      
+        
+        totalePrijs *= part;
+        
+        try {
+            conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+            ResultSet result = stat.executeQuery("SELECT S.Geld AS Aantal, S.ID AS ID FROM Speler AS S Join Deelnemer AS D ON D.Speler_ID = S.ID WHERE D.ID = " + deelnemerID);
+
+            if (result.next()) {
+                aantal = result.getDouble("Aantal");
+                spelerID = result.getInt("ID");
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }        
+        
+        // Zetten info
+        try {
+            conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+
+            PreparedStatement preparedStmt = conn.prepareStatement("UPDATE Speler SET Geld = ? WHERE ID = ?");
+
+            preparedStmt.setDouble(1, (aantal + totalePrijs));
             preparedStmt.setInt(2, spelerID);
             preparedStmt.executeUpdate();
         } catch (Exception ex) {
@@ -331,8 +392,7 @@ public class RoundsForm extends javax.swing.JFrame {
     }
     
     private List<Integer> getAvailableTable(int ronde) {
-        
-
+        // Deze functie pakt de eerstvolgende beschikbare tafel.
         // Beschikbare tafel halen
         List<Integer> value = new ArrayList<Integer>() {};
         Map<Integer, Integer> tafels = new HashMap<Integer, Integer>() {};
@@ -397,6 +457,7 @@ public class RoundsForm extends javax.swing.JFrame {
     }
 
     private Map<Integer, Integer> getChosenWinners(int ronde) {
+        // Alle gekozen winnaars ophalen met positie 1, 2 en 3.
         Map<Integer, Integer> value = new HashMap<Integer, Integer>() {};
         
         try {
@@ -420,6 +481,7 @@ public class RoundsForm extends javax.swing.JFrame {
     }
     
     private void fillFields() {
+        // Invullen van alle velden.
         int rondeIndex = jComboBox1.getSelectedIndex();
         int tafelIndex = jComboBox2.getSelectedIndex();
         
@@ -522,6 +584,7 @@ public class RoundsForm extends javax.swing.JFrame {
     }
     
     private void setToernooiStatus(int status) {
+        // Status van een toernooi zetten
         try {
             conn = SimpleDataSourceV2.getConnection();
 
@@ -542,6 +605,7 @@ public class RoundsForm extends javax.swing.JFrame {
     }
 
     private void updatePlayerRating(int deelnemerID) {
+        // Player rating zetten
         int spelerID = 0;
         int gewonnen = 0;
         int verloren = 0;
@@ -642,16 +706,21 @@ public class RoundsForm extends javax.swing.JFrame {
         jComboBox2 = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
         jLabel5 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Rounds");
         setMaximizedBounds(new java.awt.Rectangle(0, 0, 0, 0));
-        setMinimumSize(new java.awt.Dimension(400, 300));
+        setMaximumSize(new java.awt.Dimension(320, 360));
+        setMinimumSize(new java.awt.Dimension(320, 360));
+        setPreferredSize(new java.awt.Dimension(320, 360));
         setResizable(false);
+        setSize(new java.awt.Dimension(320, 360));
         getContentPane().setLayout(null);
 
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -660,15 +729,15 @@ public class RoundsForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jComboBox1);
-        jComboBox1.setBounds(110, 40, 97, 20);
+        jComboBox1.setBounds(110, 90, 97, 20);
 
         jLabel1.setText("Ronde:");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(50, 40, 40, 14);
+        jLabel1.setBounds(30, 90, 70, 14);
 
         jLabel2.setText("Tafel:");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(60, 70, 30, 14);
+        jLabel2.setBounds(30, 120, 70, 14);
 
         jComboBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -676,28 +745,19 @@ public class RoundsForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jComboBox2);
-        jComboBox2.setBounds(110, 70, 97, 20);
+        jComboBox2.setBounds(110, 120, 97, 20);
 
         jLabel3.setText("Toernooi naam: ");
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(10, 20, 90, 14);
+        jLabel3.setBounds(10, 70, 90, 14);
 
         jLabel4.setText("Toernooi Naam");
         getContentPane().add(jLabel4);
-        jLabel4.setBounds(110, 20, 100, 14);
-
-        jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jList1.setMaximumSize(new java.awt.Dimension(28, 80));
-        jList1.setMinimumSize(new java.awt.Dimension(28, 80));
-        jList1.setPreferredSize(new java.awt.Dimension(28, 80));
-        jScrollPane1.setViewportView(jList1);
-
-        getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(110, 100, 100, 130);
+        jLabel4.setBounds(110, 70, 100, 14);
 
         jLabel5.setText("Spelers:");
         getContentPane().add(jLabel5);
-        jLabel5.setBounds(50, 100, 40, 14);
+        jLabel5.setBounds(30, 150, 60, 14);
 
         jButton1.setText("Promoveren tot ronde 0");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -706,7 +766,25 @@ public class RoundsForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(40, 240, 250, 30);
+        jButton1.setBounds(40, 290, 250, 30);
+
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jList1.setMaximumSize(new java.awt.Dimension(28, 80));
+        jList1.setMinimumSize(new java.awt.Dimension(28, 80));
+        jList1.setPreferredSize(new java.awt.Dimension(28, 80));
+        jScrollPane1.setViewportView(jList1);
+
+        jScrollPane2.setViewportView(jScrollPane1);
+
+        getContentPane().add(jScrollPane2);
+        jScrollPane2.setBounds(110, 150, 140, 130);
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel6.setText("Promoveren van spelers");
+        getContentPane().add(jLabel6);
+        jLabel6.setBounds(60, 20, 230, 22);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -799,12 +877,10 @@ public class RoundsForm extends javax.swing.JFrame {
 
                             if (deelnemer.DeelnemerID == selectedItem.DeelnemerID) {
                                 preparedStmt.setInt(1, 1);
-                                setGewonnenVerloren(deelnemer.DeelnemerID, true);
-                                updatePlayerRating(deelnemer.DeelnemerID);
+                                setGewonnenVerloren(deelnemer.DeelnemerID, true, 0);
                             } else {
                                 preparedStmt.setInt(1, 0);
-                                setGewonnenVerloren(deelnemer.DeelnemerID, false);
-                                updatePlayerRating(deelnemer.DeelnemerID);
+                                setGewonnenVerloren(deelnemer.DeelnemerID, false, 0);
                             }
                             preparedStmt.setInt(2, deelnemer.DeelnemerID);
                             preparedStmt.executeUpdate();
@@ -815,13 +891,20 @@ public class RoundsForm extends javax.swing.JFrame {
                 } else {
                     // Ik weet dat dit zielige code is
                     int uitslag = 0;
+                    int extra = 0;
                     Map<Integer, Integer> winners = getChosenWinners(huidigeRonde);
                     if (winners.get(1) == 0){
                         uitslag = 1;
+                        extra = 3;
+                        giveWinnerMoney(selectedItem.DeelnemerID, 0.4);
                     } else if (winners.get(2) == 0) {
+                        extra = 2;
                         uitslag = 2;
+                        giveWinnerMoney(selectedItem.DeelnemerID, 0.25);
                     } else if (winners.get(3) == 0) {
+                        extra = 1;
                         uitslag = 3;
+                        giveWinnerMoney(selectedItem.DeelnemerID, 0.1);
                     }
                     
                     try {
@@ -834,8 +917,7 @@ public class RoundsForm extends javax.swing.JFrame {
                         preparedStmt.setInt(2, selectedItem.DeelnemerID);
                         preparedStmt.executeUpdate();
                         
-                        setGewonnenVerloren(selectedItem.DeelnemerID, true);
-                        updatePlayerRating(selectedItem.DeelnemerID);
+                        setGewonnenVerloren(selectedItem.DeelnemerID, true, extra);
                         
                         if (uitslag == 3) {
                             
@@ -844,22 +926,23 @@ public class RoundsForm extends javax.swing.JFrame {
                             
                             for (int i = 0; i < lm.getSize(); i++) {
                                 Deelnemer deelnemer = (Deelnemer) lm.getElementAt(i);
-
+                                
+                                if (deelnemer.DeelnemerID == selectedItem.DeelnemerID) {
+                                    // Als de deelnemer ID het gekozen deelnemer ID is, in dit geval de derde plaats.. Dan deze query skippen.
+                                    continue;
+                                }
+                                
                                 conn = SimpleDataSourceV2.getConnection();
 
                                 Statement stat2 = conn.createStatement();
                                 String query2 = "UPDATE RoundRegistration SET Uitslag = ? WHERE DeelnemerID = ?";
                                 PreparedStatement preparedStmt2 = conn.prepareStatement(query2);
 
-                                if (deelnemer.DeelnemerID == selectedItem.DeelnemerID) {
-                                    preparedStmt2.setInt(1, 3);
-                                } else {
-                                    preparedStmt2.setInt(1, 0);
-                                    setGewonnenVerloren(deelnemer.DeelnemerID, false);
-                                    updatePlayerRating(deelnemer.DeelnemerID);
-                                }
+                                preparedStmt2.setInt(1, 0);
                                 preparedStmt2.setInt(2, deelnemer.DeelnemerID);
                                 preparedStmt2.executeUpdate();
+                                
+                                setGewonnenVerloren(deelnemer.DeelnemerID, false, 0);
                             }
                         }
                         
@@ -965,7 +1048,9 @@ public class RoundsForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
 }
