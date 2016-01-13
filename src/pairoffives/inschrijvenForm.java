@@ -24,9 +24,9 @@ import javax.swing.JOptionPane;
  */
 public class inschrijvenForm extends javax.swing.JFrame {
 
-    
     DefaultComboBoxModel box1 = new DefaultComboBoxModel();
-    DefaultComboBoxModel box2 = new DefaultComboBoxModel();    
+    DefaultComboBoxModel box2 = new DefaultComboBoxModel();
+    public int id;
 
     public void setSpelers() {
 
@@ -115,8 +115,6 @@ public class inschrijvenForm extends javax.swing.JFrame {
         return 0;
 
     }
-
-    public int id;
 
     private int getAvailableTable() {
         ModelItem combobox2 = (ModelItem) jComboBox2.getSelectedItem();
@@ -371,7 +369,6 @@ public class inschrijvenForm extends javax.swing.JFrame {
         initComponents();
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -545,7 +542,6 @@ public class inschrijvenForm extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
