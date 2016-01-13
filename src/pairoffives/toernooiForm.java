@@ -218,7 +218,7 @@ public class toernooiForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(100, 400, 120, 23);
+        jButton1.setBounds(110, 400, 140, 23);
 
         jButton3.setText("Toernooi wijzigen");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -227,7 +227,7 @@ public class toernooiForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton3);
-        jButton3.setBounds(230, 400, 120, 23);
+        jButton3.setBounds(260, 400, 150, 23);
         getContentPane().add(jLabel11);
         jLabel11.setBounds(140, 50, 34, 0);
         getContentPane().add(jLabel8);
@@ -287,14 +287,14 @@ public class toernooiForm extends javax.swing.JFrame {
         getContentPane().add(jLabel13);
         jLabel13.setBounds(10, 370, 110, 14);
 
-        resetButton.setText("reset");
+        resetButton.setText("Reset");
         resetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetButtonActionPerformed(evt);
             }
         });
         getContentPane().add(resetButton);
-        resetButton.setBounds(10, 400, 57, 23);
+        resetButton.setBounds(10, 400, 80, 23);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
