@@ -273,17 +273,6 @@ public class masterclassForm extends java.awt.Frame {
 
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     public masterclassForm() {
         initComponents();
     }
@@ -343,7 +332,7 @@ public class masterclassForm extends java.awt.Frame {
         jLabel21 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
+        jComboBox1 = new javax.swing.JComboBox();
 
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -442,15 +431,12 @@ public class masterclassForm extends java.awt.Frame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(60, 60, 60)
-                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(30, 30, 30)
-                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                .addGap(60, 60, 60)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(30, 30, 30)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -576,9 +562,9 @@ public class masterclassForm extends java.awt.Frame {
 
         jLabel18.setText("locatie:");
 
-        jTextField7.addActionListener(new java.awt.event.ActionListener() {
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField7ActionPerformed(evt);
+                jComboBox1ActionPerformed(evt);
             }
         });
 
@@ -607,15 +593,16 @@ public class masterclassForm extends java.awt.Frame {
                             .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(jTextField2)
-                    .addComponent(jTextField3)
-                    .addComponent(jTextField4)
-                    .addComponent(jTextField5)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(jTextField8)
-                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jTextField2)
+                        .addComponent(jTextField3)
+                        .addComponent(jTextField4)
+                        .addComponent(jTextField5)
+                        .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                        .addComponent(jTextField8)
+                        .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -660,11 +647,11 @@ public class masterclassForm extends java.awt.Frame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel18)
                             .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(11, 11, 11)
+                        .addGap(13, 13, 13)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel17))
-                        .addGap(16, 16, 16)
+                            .addComponent(jLabel17)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(19, 19, 19)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel20)
                             .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -675,7 +662,7 @@ public class masterclassForm extends java.awt.Frame {
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton2)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(jButton3)
                 .addGap(38, 38, 38))
         );
@@ -730,18 +717,21 @@ public class masterclassForm extends java.awt.Frame {
     }//GEN-LAST:event_jTable1MousePressed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        
+         
         try {
-
+                        
             Connection conn = SimpleDataSourceV2.getConnection();
 
             int row = jTable1.getSelectedRow();
             String Table_click = (jTable1.getModel().getValueAt(row, 0).toString());
-
+                       
             Statement stat = conn.createStatement();
             ResultSet result = stat.executeQuery("select * from masterclass where id ='" + Table_click + "'");
-
+            String add6 = "";
+            
             while (result.next()) {
-
+                               
                 int add0 = result.getInt("id");
                 jLabel19.setText(Integer.toString(add0));
                 String add1 = result.getString("naam");
@@ -749,18 +739,17 @@ public class masterclassForm extends java.awt.Frame {
                 String add3 = result.getString("prijs");
                 String add4 = result.getString("min_rating");
                 String add5 = result.getString("locatie");
-                String add6 = result.getString("leraar");
+                add6 = result.getString("leraar");
                 String add7 = result.getString("max_deelnemers");
-
+                              
                 jTextField2.setText(add1);
                 jTextField3.setText(add2);
                 jTextField4.setText(add3);
                 jTextField5.setText(add4);
                 jTextField6.setText(add5);
-                jTextField7.setText(add6);
+                jComboBox1.setSelectedItem(add6);
                 jTextField8.setText(add7);
-                
-                ;
+                             
             }
 
         } catch (Exception ex) {
@@ -785,17 +774,47 @@ public class masterclassForm extends java.awt.Frame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField8ActionPerformed
 
-    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField7ActionPerformed
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
-    
-    
+    DefaultComboBoxModel box3 = new DefaultComboBoxModel();
+    public void Vullen_Leraar() {
+
+        try {
+
+            box3.removeAllElements();
+
+            Connection conn = SimpleDataSourceV2.getConnection();
+
+            Statement stat = conn.createStatement();
+
+            ResultSet result = stat.executeQuery("select * from speler WHERE leraar = '1'");
+
+            while (result.next()) {
+
+                ModelItem item = new ModelItem();
+
+                item.id = result.getInt("id");
+                item.naam = result.getString("naam");
+                System.out.println(result.getInt("leraar"));
+                box3.addElement(item);
+
+            }
+
+            jComboBox1.setModel(box3);
+
+        } catch (Exception ex) {
+
+            System.out.println(ex);
+        }
+    }
     public void masterclassOpslaanWijzigen() {
 
         try {
 
             Connection conn = SimpleDataSourceV2.getConnection();
+            ModelItem combobox1 = (ModelItem) jComboBox1.getSelectedItem();
 
             if(jLabel19.getText() == ""){
                
@@ -806,7 +825,7 @@ public class masterclassForm extends java.awt.Frame {
             stat.setString(3, jTextField4.getText());
             stat.setString(4, jTextField5.getText());
             stat.setString(5, jTextField6.getText());
-            stat.setString(6, jTextField7.getText());
+            stat.setInt(6, combobox1.id);
             stat.setString(7, jTextField8.getText());
 
             int effectedRecords = stat.executeUpdate();
@@ -830,7 +849,7 @@ public class masterclassForm extends java.awt.Frame {
             result.setString(3, jTextField4.getText());
             result.setString(4, jTextField5.getText());
             result.setString(5, jTextField6.getText());
-            result.setString(6, jTextField7.getText());
+            result.setInt(6, combobox1.id);
             result.setString(7, jTextField8.getText());
 
             int res = result.executeUpdate();
@@ -892,6 +911,7 @@ public class masterclassForm extends java.awt.Frame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox3;
     private javax.swing.JComboBox jComboBox4;
     private javax.swing.JLabel jLabel1;
@@ -931,7 +951,6 @@ public class masterclassForm extends java.awt.Frame {
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     // End of variables declaration//GEN-END:variables
 }
