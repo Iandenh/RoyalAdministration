@@ -435,24 +435,38 @@ public class toernooiForm extends javax.swing.JFrame {
     private void maakTafels(int toernooiId, int maxdeelnemers, int perTafel) throws SQLException {
         Connection conn = SimpleDataSourceV2.getConnection();
 
-        String prepSqlStatement = "INSERT INTO tafel (toernooi_id, max_aantal_spelers) VALUES (?, ?)";
-        for (int i = 0; i < (maxdeelnemers / perTafel); i++) {
-            PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
-            stat.setInt(1, toernooiId);
-            stat.setInt(2, perTafel);
-            int effectedRecords = stat.executeUpdate();
-            stat.close();
-        }
+        
+        int divede = maxdeelnemers / perTafel;
         int rest = maxdeelnemers % perTafel;
-        if (rest >= 5) {
-            PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
-            stat.setInt(1, toernooiId);
-            stat.setInt(2, rest);
-            int effectedRecords = stat.executeUpdate();
-            stat.close();
+        if(rest != 0){
+            divede--;
+            int getal1 = rest / 2;
+            int getal2 = rest - getal1 ;
+            
+            int getal3 = perTafel / 2;
+            int getal4 = perTafel - getal3;
+            
+            int aanTafel1 = getal1 + getal3;
+            int aanTafel2 = getal2 + getal4;
+            tafelOpslaan(conn, toernooiId, aanTafel1);
+            tafelOpslaan(conn, toernooiId, aanTafel2);
+            
+            
+        }
+        for (int i = 0; i < (divede); i++) {
+            tafelOpslaan(conn, toernooiId, perTafel);
         }
     }
-
+    
+    public void tafelOpslaan(Connection conn,int toernooiId,int perTafel) throws SQLException{
+        String prepSqlStatement = "INSERT INTO tafel (toernooi_id, max_aantal_spelers) VALUES (?, ?)";
+        PreparedStatement stat = conn.prepareStatement(prepSqlStatement);
+        stat.setInt(1, toernooiId);
+        stat.setInt(2, perTafel);
+        int effectedRecords = stat.executeUpdate();
+        stat.close();
+    }
+    
     private void toernooiVerwijderen() {
 
         try {
@@ -582,7 +596,7 @@ public class toernooiForm extends javax.swing.JFrame {
         }
         if (Integer.parseInt(maxField.getText()) % 10 < 5 && Integer.parseInt(maxField.getText()) % 10 != 0) {
             JOptionPane.showMessageDialog(null, "Er kunnen geen tafels met minder dan 5 man zijn");
-            return false;
+            //return false;
         }
         return true;
     }
