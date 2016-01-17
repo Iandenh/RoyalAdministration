@@ -176,56 +176,28 @@ public class RoundsForm extends javax.swing.JFrame {
             }
         }
 
-        // -- Deelnemers per tafel per ronde --
-        // ++ Deelnemers opslaan in lijst ++    
-        Map<Integer, Integer> spelerIDs = new HashMap<Integer, Integer>() {
-        };
+        // ++ Deelnemers opslaan in lijst ++      
         try {
 
             conn = SimpleDataSourceV2.getConnection();
 
             Statement stat = conn.createStatement();
-            ResultSet result = stat.executeQuery("SELECT * FROM Deelnemer WHERE toernooi_ID ='" + toernooiID + "'");
+            ResultSet result = stat.executeQuery("SELECT S.ID AS 'SpelerID', D.ID AS 'DeelnemerID', S.Naam AS 'Naam' FROM Deelnemer AS D JOIN Speler AS S ON S.ID = D.Speler_ID WHERE D.Toernooi_ID = " + ToernooiID);
 
             while (result.next()) {
-                int ID = result.getInt("ID");
-                int spelerID = result.getInt("speler_id");
+                Deelnemer deelnemer = new Deelnemer();
+                deelnemer.DeelnemerID = result.getInt("DeelnemerID");
+                deelnemer.ID = result.getInt("SpelerID");
+                deelnemer.Naam = result.getString("Naam");
 
-                if (spelerIDs.get(ID) == null) {
-                    spelerIDs.put(ID, spelerID);
+                if (participantsList.get(deelnemer.DeelnemerID) == null) {
+                    participantsList.put(deelnemer.DeelnemerID, deelnemer);
                 }
             }
 
         } catch (Exception ex) {
-
             System.out.println(ex);
             value = false;
-        }
-
-        //for (int spelerID : spelerIDs.values()){            
-        for (Map.Entry<Integer, Integer> entry : spelerIDs.entrySet()) {
-            try {
-
-                conn = SimpleDataSourceV2.getConnection();
-
-                Statement stat = conn.createStatement();
-                ResultSet result = stat.executeQuery("SELECT * FROM Speler WHERE ID ='" + entry.getValue() + "'");
-
-                while (result.next()) {
-                    Deelnemer deelnemer = new Deelnemer();
-                    deelnemer.DeelnemerID = entry.getKey();
-                    deelnemer.ID = result.getInt("ID");
-                    deelnemer.Naam = result.getString("Naam");
-
-                    if (participantsList.get(entry.getKey()) == null) {
-                        participantsList.put(entry.getKey(), deelnemer);
-                    }
-                }
-
-            } catch (Exception ex) {
-                System.out.println(ex);
-                value = false;
-            }
         }
         // -- Deelnemers opslaan in lijst --
 
