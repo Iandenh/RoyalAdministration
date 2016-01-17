@@ -155,7 +155,7 @@ public class RoundsForm extends javax.swing.JFrame {
                     conn = SimpleDataSourceV2.getConnection();
 
                     Statement stat = conn.createStatement();
-                    ResultSet result = stat.executeQuery("SELECT * FROM RoundRegistration WHERE Uitslag IS NULL AND ToernooiID ='" + toernooiID + "' AND Ronde='" + ronde + "' AND TafelID ='" + tafel + "'");
+                    ResultSet result = stat.executeQuery("SELECT * FROM RoundRegistration WHERE Uitslag IS NULL AND ToernooiID = " + ToernooiID + " AND Ronde = " + ronde + " AND TafelID = " + tafel);
 
                     while (result.next()) {
                         int ID = result.getInt("DeelnemerID");
@@ -182,7 +182,7 @@ public class RoundsForm extends javax.swing.JFrame {
             conn = SimpleDataSourceV2.getConnection();
 
             Statement stat = conn.createStatement();
-            ResultSet result = stat.executeQuery("SELECT S.ID AS 'SpelerID', D.ID AS 'DeelnemerID', S.Naam AS 'Naam' FROM Deelnemer AS D JOIN Speler AS S ON S.ID = D.Speler_ID WHERE D.Toernooi_ID = " + ToernooiID);
+            ResultSet result = stat.executeQuery("SELECT RR.DeelnemerID AS 'DeelnemerID', S.ID AS 'SpelerID', S.Naam AS 'Naam' FROM RoundRegistration AS RR JOIN Deelnemer AS D ON D.ID = RR.DeelnemerID JOIN Speler AS S ON S.ID = D.Speler_ID WHERE RR.ToernooiID = " + ToernooiID);
 
             while (result.next()) {
                 Deelnemer deelnemer = new Deelnemer();
